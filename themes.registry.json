@@ -1,0 +1,9 @@
+[
+  {
+    "name": "Flexoki",
+    "author": "Eidos Team",
+    "repo": "mayneyao/eidos-theme-flexoki",
+    "screenshot": "screenshot.png",
+    "modes": ["light", "dark"]
+  }
+]
