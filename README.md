@@ -25,7 +25,6 @@ Submit your theme by adding to `themes.registry.json`:
 | `repo`       | Yes      | GitHub `owner/repo`                            |
 | `screenshot` | Yes      | Image filename in repo                         |
 | `modes`      | Yes      | `["light"]`, `["dark"]` or `["light", "dark"]` |
-| `legacy`     | No       | `true` for deprecated themes                   |
 
 ### Theme Requirements
 
