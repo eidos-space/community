@@ -1,4 +1,14 @@
-# Eidos Extension & Theme Registry
+# Eidos Registry
+
+## Eidos Lite plugins
+
+`plugins.registry.json` is the official Marketplace catalog for the current Eidos Lite plugin preview. Legacy extension and theme catalogs below remain separate.
+
+To submit a plugin, publish a public GitHub Release containing `<id>-<version>.eidos-plugin`, then open a PR adding its entry. Include its exact version, tag, asset filename, SHA-256 of the uploaded bytes, a short description and a compatibility note. Set `preview: true` for preview builds. Optional icons contain SVG path data in a 24×24 viewBox, never markup or remote images.
+
+Updates use a new release and a registry PR. Do not replace published assets: the host verifies the pinned checksum and package identity before requesting installation permission. Maintainers review ownership, compatibility and requested permissions before merging. Listing does not execute plugin code. Install once per device and enable separately in each Space.
+
+The host fetches this catalog over HTTPS and downloads the pinned GitHub Release asset. It retains the last successful catalog for offline browsing; installing requires a fresh online catalog. There is no automatic update or npm dependency installation.
 
 This is the official registry for Eidos extensions and themes.
 
