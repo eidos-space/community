@@ -11,7 +11,7 @@
       "asset": "eidos.map-0.1.0.eidos-plugin",
       "sha256": "6e0e1545021b4a8c264ca675a0a4026737b599cb3bd48a1f1a9bb9c9027310f1",
       "preview": true,
-      "compatibility": "Requires the current Eidos Lite plugin preview build.",
+      "compatibility": "Requires Eidos Lite 0.16.0 or later.",
       "icon": { "paths": ["M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z", "M9 3v15", "M15 6v15"] }
     },
     {
@@ -24,7 +24,7 @@
       "asset": "eidos.markmap-0.1.0.eidos-plugin",
       "sha256": "b72fce4265b8f7d7a281ff303f83a91c70bb64b20b80ad9a8c916e8a098537ff",
       "preview": true,
-      "compatibility": "Requires the current Eidos Lite plugin preview build.",
+      "compatibility": "Requires Eidos Lite 0.16.0 or later.",
       "icon": { "paths": ["M12 3a3 3 0 0 0-3 3c0 .3.05.59.14.86l-4.29 2.5a3 3 0 0 0-1.85-.36 3 3 0 1 0 3 3c0-.3-.05-.59-.14-.86l4.29-2.5a3 3 0 0 0 1.85.36 3 3 0 0 0 1.85-.36l4.29 2.5c-.09.27-.14.56-.14.86a3 3 0 1 0 3-3 3 3 0 0 0-1.85.36l-4.29-2.5c.09-.27.14-.56.14-.86a3 3 0 0 0-3-3z"] }
     },
     {
@@ -37,7 +37,7 @@
       "asset": "eidos.chart-0.1.0.eidos-plugin",
       "sha256": "2b876b7190398a231e5c05a7163e570dc4ce7e0d55e5d41f4e1ce5163320f8c2",
       "preview": true,
-      "compatibility": "Requires the current Eidos Lite plugin preview build.",
+      "compatibility": "Requires Eidos Lite 0.16.0 or later.",
       "icon": { "paths": ["M3 3v18h18", "M7 16v-5", "M12 16V7", "M17 16v-8"] }
     }
   ]
