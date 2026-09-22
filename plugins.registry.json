@@ -2,6 +2,20 @@
   "schemaVersion": 1,
   "plugins": [
     {
+      "id": "eidos.smart-actions",
+      "name": "Smart Actions",
+      "description": "Use Jev to classify requests, assess urgency and score feedback, then write results to your table.",
+      "category": "automation",
+      "repo": "eidos-space/eidos-smart-actions-plugin",
+      "version": "0.1.0",
+      "tag": "v0.1.0",
+      "asset": "eidos.smart-actions-0.1.0.eidos-plugin",
+      "sha256": "b31d0e1b5d3a65d56b94cd2e5efb29ffa0d7b8367d093ceda4cb1c5f8949208c",
+      "preview": false,
+      "compatibility": "Requires Eidos Lite 0.17.0 or later with plugin API 1.1.0. Not supported by CLI Serve.",
+      "icon": { "paths": ["M12 3v4m0 10v4M3 12h4m10 0h4M6 6l3 3m6 6 3 3M6 18l3-3m6-6 3-3"] }
+    },
+    {
       "id": "eidos.map",
       "name": "Map",
       "description": "Explore table records on a MapLibre map using latitude and longitude fields.",
