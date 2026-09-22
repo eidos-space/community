@@ -1,91 +1,50 @@
-# Eidos Registry
+# Eidos Community
 
-This repository is the source of truth for the Eidos community plugin catalog and hosts the standalone marketplace at `community.eidos.space`. The catalog is public, reviewable, and backed by GitHub releases. The marketplace reads `plugins.registry.json` directly and caches successful responses for 10 minutes; it has no account or database dependency.
+The independent application marketplace at [community.eidos.space](https://community.eidos.space).
 
-## Marketplace development
+## Data and ownership
 
-```bash
-pnpm install
+- This repository owns the website, its English and Chinese pages, and deployment.
+- [eidos-space/registry](https://github.com/eidos-space/registry) owns catalog entries, schemas, and plugin submissions.
+- Both development and production fetch the public GitHub registry at runtime.
+  Successful responses are cached for 10 minutes. Registry updates do not require
+  a website deployment. A first load requires network access; refresh failures
+  can use the last successful response available to the loader.
+- Plugin README files and screenshots are read from their GitHub repositories.
+  Installation assets remain pinned to the releases and checksums in the registry.
+
+Submit or update a plugin in the
+[registry repository](https://github.com/eidos-space/registry/blob/main/CONTRIBUTING.md).
+Report website issues and contribute UI changes here.
+
+## Development
+
+```sh
+pnpm install --frozen-lockfile
 pnpm dev
 pnpm test
 pnpm typecheck
 pnpm build
+```
+
+## Deployment
+
+```sh
+pnpm exec wrangler login
 pnpm deploy
 ```
 
-Cloudflare Workers serves the Astro application. Maintainers deploy it locally with `pnpm deploy`; GitHub Actions only validates registry changes. The Worker owns the `community.eidos.space` custom domain.
+Maintainers deploy locally. GitHub Actions only runs validation; it does not
+deploy. The existing Worker name `eidos-plugin-marketplace` and custom domain
+`community.eidos.space` are retained so deployments update the same service.
+No registry checkout, database, or account service is required.
 
-## Eidos Lite plugins
+## Repository layout
 
-`plugins.registry.json` is the official Marketplace catalog for Eidos Lite and `eidos serve`. Legacy extension and theme catalogs below remain separate.
+- `src/`: Astro pages, components, styles, and cached GitHub data loaders.
+- `public/`: static assets.
+- `tests/`: marketplace contract checks; loader tests live beside their source.
+- `wrangler.jsonc`: Cloudflare Worker and custom domain configuration.
 
-To submit a plugin, publish a public GitHub Release containing `<id>-<version>.eidos-plugin`, then open a PR adding its entry. Include its category, exact version, tag, asset filename, SHA-256 of the uploaded bytes, a short description and a compatibility note. Optional icons contain SVG path data in a 24×24 viewBox, never markup or remote images. Optional screenshots reference PNG, JPEG, or WebP files in the plugin repository and include useful alt text; the marketplace resolves them from the repository's `main` branch.
-
-Published plugins do not have preview or stable channels. Authors should document experimental behavior and known limitations in their README. The registry keeps `preview: false` only as a deprecated compatibility field for Eidos Lite 0.16.0; submissions must not use it to describe release status.
-
-Updates use a new release and a registry PR. Do not replace published assets: the host verifies the pinned checksum and package identity before requesting installation permission. Maintainers review ownership, compatibility and requested permissions before merging. Listing does not execute plugin code. Install once per device and enable separately in each Space.
-
-The host fetches this catalog over HTTPS and downloads the pinned GitHub Release asset. It retains the last successful catalog for offline browsing; installing requires a fresh online catalog. There is no automatic update or npm dependency installation.
-
-This is the official registry for Eidos extensions and themes.
-
-## Themes
-
-Submit your theme by adding to `themes.registry.json`:
-
-```json
-{
-  "name": "My Theme",
-  "author": "github-username",
-  "repo": "owner/repo-name",
-  "screenshot": "screenshot.png",
-  "modes": ["dark", "light"]
-}
-```
-
-### Theme Fields
-
-| Field        | Required | Description                                    |
-| ------------ | -------- | ---------------------------------------------- |
-| `name`       | Yes      | Display name                                   |
-| `author`     | Yes      | Your name                                      |
-| `repo`       | Yes      | GitHub `owner/repo`                            |
-| `screenshot` | Yes      | Image filename in repo                         |
-| `modes`      | Yes      | `["light"]`, `["dark"]` or `["light", "dark"]` |
-
-### Theme Requirements
-
-- Public GitHub repo
-- `theme.css` in repo root
-- Screenshot image in repo
-
-## Extensions
-
-Submit your extension by adding to `extensions.registry.json`:
-
-```json
-{
-  "name": "My Extension",
-  "author": "github-username",
-  "repo": "owner/repo-name",
-  "description": "Short description of what the extension does"
-}
-```
-
-### Extension Fields
-
-| Field         | Required | Description                         |
-| ------------- | -------- | ----------------------------------- |
-| `name`        | Yes      | Display name                        |
-| `author`      | Yes      | Your name                           |
-| `repo`        | Yes      | GitHub `owner/repo`                 |
-| `description` | Yes      | Brief description of the extension  |
-
-### Extension Requirements
-
-- Public GitHub repo
-- Follow the Eidos extension structure
-
-## Example Repos
-
-- Theme: `mayneyao/eidos-theme-flexoki`
+The repository retains the shared history from before the website was split
+from the registry.

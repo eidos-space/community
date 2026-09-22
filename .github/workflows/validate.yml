@@ -1,21 +1,12 @@
-name: Validate
+name: Validate community
 
 on:
   pull_request:
-    paths:
-      - '*.registry.json'
-      - 'schemas/**'
-      - 'src/**'
-      - 'public/**'
-      - 'tests/**'
-      - 'package.json'
-      - 'pnpm-lock.yaml'
-      - 'astro.config.mjs'
-      - 'tsconfig.json'
-      - 'wrangler.jsonc'
-      - '.github/workflows/**'
   push:
     branches: [main]
+
+permissions:
+  contents: read
 
 jobs:
   validate:
@@ -33,7 +24,3 @@ jobs:
       - run: pnpm test
       - run: pnpm typecheck
       - run: pnpm build
-      - run: npm install -g ajv-cli
-      - run: ajv validate -s schemas/themes.schema.json -d themes.registry.json
-      - run: ajv validate -s schemas/extensions.schema.json -d extensions.registry.json
-      - run: ajv validate -s schemas/plugins.schema.json -d plugins.registry.json
