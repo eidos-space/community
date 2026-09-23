@@ -38,6 +38,8 @@ const displayedPlugins = isThemes ? themePlugins : functionalPlugins;
 
 const pageTitle = isThemes ? t.themesMetaTitle : t.pluginsMetaTitle;
 const pageDesc = isThemes ? t.themesMetaDescription : t.pluginsMetaDescription;
+const heroTitleLead = isThemes ? t.themesTitleLead : t.titleLead;
+const heroTitleAccent = isThemes ? t.themesTitleAccent : t.titleAccent;
 const searchPlaceholder = isThemes ? t.searchThemesPlaceholder : t.searchPluginsPlaceholder;
 const itemsCount = isThemes
   ? t.themeCount(themePlugins.length)
@@ -49,8 +51,8 @@ const itemsCount = isThemes
     <section class="market-hero" aria-labelledby="market-title">
       <div class="shell">
         <h1 id="market-title">
-          <span>{t.titleLead}</span>{locale === "en" && " "}
-          <span class="hero-title-accent">{t.titleAccent}</span>
+          <span>{heroTitleLead}</span>{locale === "en" && " "}
+          <span class="hero-title-accent">{heroTitleAccent}</span>
         </h1>
 
         {
