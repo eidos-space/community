@@ -13,7 +13,17 @@ interface Messages {
   titleAccent: string;
   searchLabel: string;
   searchPlaceholder: string;
+  tabsLabel: string;
+  tabAll: string;
+  tabPlugins: string;
+  tabThemes: string;
+  pluginsTitle: string;
+  pluginsSubtitle: string;
+  themesTitle: string;
+  themesSubtitle: string;
   pluginCount: (count: number) => string;
+  themeCount: (count: number) => string;
+  combinedCount: (plugins: number, themes: number) => string;
   catalog: string;
   noResultsTitle: string;
   noResultsBody: string;
@@ -24,40 +34,61 @@ interface Messages {
 
 export const messages: Record<Locale, Messages> = {
   en: {
-    metaTitle: "Eidos Plugin Marketplace",
-    metaDescription: "Discover community plugins for Eidos Lite and eidos serve.",
+    metaTitle: "Eidos Community · Plugins & Themes",
+    metaDescription: "Discover community plugins and themes for Eidos Lite and eidos serve.",
     brand: "Eidos",
     docs: "Developer docs",
     submit: "Submit a plugin",
     language: "Language",
     titleLead: "Apps for",
     titleAccent: "files you own.",
-    searchLabel: "Search plugins",
-    searchPlaceholder: "Search plugins",
+    searchLabel: "Search plugins and themes",
+    searchPlaceholder: "Search plugins and themes",
+    tabsLabel: "Filter by type",
+    tabAll: "All",
+    tabPlugins: "Plugins",
+    tabThemes: "Themes",
+    pluginsTitle: "Plugins",
+    pluginsSubtitle: "Interactive views, editors, and automations for your files",
+    themesTitle: "Themes",
+    themesSubtitle: "Personalize colors, typography, and styling for Eidos Lite",
     pluginCount: (count) => `${count} ${count === 1 ? "plugin" : "plugins"}`,
-    catalog: "Plugins",
-    noResultsTitle: "No plugins found",
-    noResultsBody: "Try another name, capability, or plugin ID.",
-    unavailableTitle: "The plugin catalog is temporarily unavailable.",
+    themeCount: (count) => `${count} ${count === 1 ? "theme" : "themes"}`,
+    combinedCount: (plugins, themes) =>
+      `${plugins} ${plugins === 1 ? "plugin" : "plugins"}, ${themes} ${themes === 1 ? "theme" : "themes"}`,
+    catalog: "Catalog",
+    noResultsTitle: "No results found",
+    noResultsBody: "Try another name, capability, or keyword.",
+    unavailableTitle: "The catalog is temporarily unavailable.",
     unavailableBody: "You can inspect the registry directly on GitHub.",
     openRegistry: "Open registry",
   },
   zh: {
-    metaTitle: "Eidos 插件市场",
-    metaDescription: "发现适用于 Eidos Lite 与 eidos serve 的社区插件。",
+    metaTitle: "Eidos 社区 · 插件与主题",
+    metaDescription: "发现适用于 Eidos Lite 与 eidos serve 的社区插件与外观主题。",
     brand: "Eidos",
     docs: "开发文档",
     submit: "提交插件",
     language: "语言",
     titleLead: "为自己的文件，",
     titleAccent: "找到更多可能。",
-    searchLabel: "搜索插件",
-    searchPlaceholder: "搜索插件",
+    searchLabel: "搜索插件与主题",
+    searchPlaceholder: "搜索插件与主题",
+    tabsLabel: "按类型筛选",
+    tabAll: "全部",
+    tabPlugins: "插件",
+    tabThemes: "主题",
+    pluginsTitle: "功能插件",
+    pluginsSubtitle: "为你的笔记与表格带来丰富的扩展视图与自动化工具",
+    themesTitle: "外观主题",
+    themesSubtitle: "为 Eidos Lite 带来不同配色、排版字体与界面质感",
     pluginCount: (count) => `${count} 个插件`,
-    catalog: "插件",
-    noResultsTitle: "没有找到插件",
-    noResultsBody: "试试其他名称、能力或插件 ID。",
-    unavailableTitle: "暂时无法读取插件目录。",
+    themeCount: (count) => `${count} 款主题`,
+    combinedCount: (plugins, themes) => `${plugins} 个插件，${themes} 款主题`,
+    catalog: "目录",
+    noResultsTitle: "没有找到结果",
+    noResultsBody: "试试其他名称、能力或关键词。",
+    unavailableTitle: "暂时无法读取插件与主题目录。",
     unavailableBody: "你仍然可以前往 GitHub 查看注册表。",
     openRegistry: "打开注册表",
   },
@@ -162,7 +193,9 @@ export const pluginCategoryMessages = {
 export const detailMessages = {
   en: {
     back: "All plugins",
+    backThemes: "All themes",
     marketplace: "Marketplace",
+    themesMarketplace: "Themes",
     appProfile: "App profile",
     about: "About this app",
     aboutTheme: "About this theme",
@@ -172,6 +205,7 @@ export const detailMessages = {
     version: "Version",
     apiVersion: "API version",
     type: "Type",
+    pluginType: "Plugin",
     theme: "Theme",
     compatibility: "Compatibility",
     capabilities: "Capabilities",
@@ -203,7 +237,9 @@ export const detailMessages = {
   },
   zh: {
     back: "全部插件",
+    backThemes: "全部主题",
     marketplace: "插件市场",
+    themesMarketplace: "外观主题",
     appProfile: "应用概览",
     about: "关于此应用",
     aboutTheme: "关于此主题",
@@ -213,7 +249,8 @@ export const detailMessages = {
     version: "版本",
     apiVersion: "API 版本",
     type: "类型",
-    theme: "主题",
+    pluginType: "功能插件",
+    theme: "外观主题",
     compatibility: "兼容性",
     capabilities: "能力",
     views: "视图",

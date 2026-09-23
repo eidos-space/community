@@ -54,7 +54,11 @@ const contributionType = (item: PluginContribution) => {
 
 <Layout
   locale={locale}
-  title={plugin ? `${plugin.name} · Eidos Plugins` : `${t.notFound} · Eidos Plugins`}
+  title={
+    plugin
+      ? `${plugin.name} · ${plugin.kind === "theme" ? (locale === "zh" ? "Eidos 主题" : "Eidos Themes") : (locale === "zh" ? "Eidos 插件" : "Eidos Plugins")}`
+      : `${t.notFound} · Eidos`
+  }
   description={plugin?.description ?? t.notFoundBody}
 >
   {
@@ -62,9 +66,13 @@ const contributionType = (item: PluginContribution) => {
       <main class="detail-page">
         <section class="detail-hero">
           <div class="shell">
-            <a class="detail-back" href={listPath} aria-label={t.back}>
+            <a
+              class="detail-back"
+              href={plugin.kind === "theme" ? `${listPath}?tab=themes` : listPath}
+              aria-label={plugin.kind === "theme" ? t.backThemes : t.back}
+            >
               <span aria-hidden="true">←</span>
-              {t.back}
+              {plugin.kind === "theme" ? t.backThemes : t.back}
             </a>
 
             <div class="detail-identity">
@@ -88,7 +96,7 @@ const contributionType = (item: PluginContribution) => {
 
               <div class="detail-heading">
                 <div class="detail-labels">
-                  <span>{t.marketplace}</span>
+                  <span>{plugin.kind === "theme" ? t.themesMarketplace : t.marketplace}</span>
                   <span class="detail-category-label">{categoryLabels[plugin.category]}</span>
                 </div>
                 <h1>{plugin.name}</h1>
@@ -141,7 +149,7 @@ const contributionType = (item: PluginContribution) => {
                 <div><dt>{t.category}</dt><dd>{categoryLabels[plugin.category]}</dd></div>
                 <div><dt>{t.version}</dt><dd>{plugin.version}</dd></div>
                 <div><dt>{t.apiVersion}</dt><dd>{manifest?.requiresPluginApi ?? manifest?.apiVersion ?? "1.0"}</dd></div>
-                <div><dt>{t.type}</dt><dd>{plugin.kind === "theme" ? t.theme : t.marketplace}</dd></div>
+                <div><dt>{t.type}</dt><dd>{plugin.kind === "theme" ? t.theme : t.pluginType}</dd></div>
                 <div><dt>{t.compatibility}</dt><dd>{plugin.compatibility}</dd></div>
               </dl>
             </section>

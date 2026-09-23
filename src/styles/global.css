@@ -155,11 +155,129 @@ summary:focus-visible {
 .market-search input::placeholder { color: var(--ink-muted); }
 .market-count { color: var(--ink-muted); font-size: 0.74rem; white-space: nowrap; }
 
+.market-tabs-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-md);
+}
+
+.market-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--soft);
+}
+
+.market-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--ink-muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.market-tab:hover {
+  color: var(--ink);
+  background: oklch(0.945 0.018 215);
+}
+
+.market-tab.is-active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 3px oklch(0.16 0.012 230 / 6%), 0 1px 2px oklch(0.16 0.012 230 / 4%);
+}
+
+.tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding-inline: 5px;
+  border-radius: 9999px;
+  background: oklch(0.91 0.015 220);
+  color: var(--ink-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.market-tab.is-active .tab-badge {
+  background: var(--soft);
+  color: var(--accent-hover);
+}
+
 .catalog { background: var(--surface); }
 
 .catalog-layout { padding-block: var(--space-xl) clamp(88px, 10vw, 130px); }
 
-.plugin-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: min(100%, 900px); gap: var(--space-md); margin: 0 auto; padding: 0; list-style: none; }
+.catalog-sections {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(48px, 6vw, 72px);
+  width: min(100%, 900px);
+  margin-inline: auto;
+}
+
+.catalog-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.catalog-section[hidden] {
+  display: none;
+}
+
+.catalog-section-header {
+  text-align: left;
+}
+
+.catalog-section-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.catalog-section-title-row h2 {
+  margin: 0;
+  font-family: var(--heading);
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.catalog-section-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: var(--soft);
+  color: var(--accent-hover);
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.catalog-section-desc {
+  margin: 4px 0 0;
+  color: var(--ink-muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.plugin-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; gap: var(--space-md); margin: 0; padding: 0; list-style: none; }
 
 .plugin-card {
   position: relative;
