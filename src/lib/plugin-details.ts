@@ -1,5 +1,6 @@
 import { marked } from "marked";
 import sanitizeHtml from "sanitize-html";
+import type { Locale } from "../i18n";
 import type { MarketplacePlugin } from "./plugin-registry";
 
 const DETAIL_CACHE_SECONDS = 10 * 60;
@@ -14,6 +15,7 @@ export interface PluginContribution {
 
 export interface PluginManifestSummary {
   apiVersion: number;
+  requiresPluginApi?: string;
   views: PluginContribution[];
   actions: PluginContribution[];
   formatters: PluginContribution[];
@@ -58,6 +60,8 @@ export function parsePluginManifest(
   if (!isRecord(value) || value.id !== plugin.id || value.version !== plugin.version) return undefined;
 
   const apiVersion = typeof value.apiVersion === "number" ? value.apiVersion : 1;
+  const requires = isRecord(value.requires) ? value.requires : undefined;
+  const requiresPluginApi = nonEmptyString(requires?.pluginApi) ? requires.pluginApi : undefined;
   const browser = isRecord(value.browser) ? value.browser : undefined;
   const networkOrigins = Array.isArray(browser?.networkOrigins)
     ? browser.networkOrigins.flatMap((origin) => {
@@ -73,6 +77,7 @@ export function parsePluginManifest(
 
   return {
     apiVersion,
+    ...(requiresPluginApi ? { requiresPluginApi } : {}),
     views: parseContributions(value.views),
     actions: parseContributions(value.actions),
     formatters: parseContributions(value.formatters),
@@ -147,11 +152,14 @@ async function fetchRepositoryText(repo: string, filename: string): Promise<stri
   return undefined;
 }
 
-async function loadDetails(plugin: MarketplacePlugin): Promise<PluginDetails> {
-  const [manifestSource, readmeSource] = await Promise.all([
+async function loadDetails(plugin: MarketplacePlugin, locale: Locale): Promise<PluginDetails> {
+  const [manifestSource, localizedReadmeSource] = await Promise.all([
     fetchRepositoryText(plugin.repo, "plugin.json"),
-    fetchRepositoryText(plugin.repo, "README.md"),
+    fetchRepositoryText(plugin.repo, locale === "zh" ? "README.zh-CN.md" : "README.md"),
   ]);
+  const readmeSource = locale === "zh" && !localizedReadmeSource
+    ? await fetchRepositoryText(plugin.repo, "README.md")
+    : localizedReadmeSource;
 
   let manifest: PluginManifestSummary | undefined;
   if (manifestSource) {
@@ -168,19 +176,20 @@ async function loadDetails(plugin: MarketplacePlugin): Promise<PluginDetails> {
   };
 }
 
-export function loadPluginDetails(plugin: MarketplacePlugin): Promise<PluginDetails> {
-  const cached = memoryCache.get(plugin.id);
+export function loadPluginDetails(plugin: MarketplacePlugin, locale: Locale): Promise<PluginDetails> {
+  const cacheKey = `${plugin.id}:${plugin.version}:${locale}`;
+  const cached = memoryCache.get(cacheKey);
   if (cached && cached.expiresAt > Date.now()) return Promise.resolve(cached.value);
 
-  const existing = pendingLoads.get(plugin.id);
+  const existing = pendingLoads.get(cacheKey);
   if (existing) return existing;
 
-  const pending = loadDetails(plugin)
+  const pending = loadDetails(plugin, locale)
     .then((value) => {
-      memoryCache.set(plugin.id, { value, expiresAt: Date.now() + DETAIL_CACHE_SECONDS * 1_000 });
+      memoryCache.set(cacheKey, { value, expiresAt: Date.now() + DETAIL_CACHE_SECONDS * 1_000 });
       return value;
     })
-    .finally(() => pendingLoads.delete(plugin.id));
-  pendingLoads.set(plugin.id, pending);
+    .finally(() => pendingLoads.delete(cacheKey));
+  pendingLoads.set(cacheKey, pending);
   return pending;
 }

@@ -29,12 +29,15 @@ try {
   console.error("Could not load the Eidos plugin registry", error);
 }
 
-const details = plugin ? await loadPluginDetails(plugin) : undefined;
+const details = plugin ? await loadPluginDetails(plugin, locale) : undefined;
 const manifest = details?.manifest;
 const publisher = plugin?.repo.split("/")[0];
 const repoUrl = plugin ? `https://github.com/${plugin.repo}` : "";
 const releaseUrl = plugin
   ? `${repoUrl}/releases/tag/${encodeURIComponent(plugin.tag)}`
+  : "";
+const installUrl = plugin
+  ? `eidos-lite://plugins/install/${encodeURIComponent(plugin.id)}`
   : "";
 const iconVariant = plugin ? pluginVisualVariant(plugin.id) : 1;
 const contributions = manifest
@@ -90,9 +93,12 @@ const contributionType = (item: PluginContribution) => {
                 </div>
                 <h1>{plugin.name}</h1>
                 <p class="detail-byline">{publisher} · <code>{plugin.id}</code> · v{plugin.version}</p>
+              </div>
+
+              <div class="detail-summary">
                 <p class="detail-description">{plugin.description}</p>
                 <div class="detail-actions">
-                  <a class="detail-primary-action" href={releaseUrl}>{t.release}<span aria-hidden="true">↗</span></a>
+                  <a class="detail-primary-action" href={installUrl}>{t.install}</a>
                   <a class="detail-secondary-action" href={repoUrl}>{t.source}<span aria-hidden="true">↗</span></a>
                 </div>
               </div>
@@ -100,16 +106,9 @@ const contributionType = (item: PluginContribution) => {
           </div>
         </section>
 
-        <div class="detail-tab-bar">
-          <div class="shell" aria-label={t.marketplace}>
-            <a href="#overview" aria-current="page" data-detail-tab="overview">{t.overview}</a>
-            <a href="#properties" data-detail-tab="properties">{t.properties}</a>
-          </div>
-        </div>
-
-        <div class="shell detail-layout" id="overview" data-detail-layout data-active-panel="overview">
-          <article class="detail-main" data-detail-panel="overview">
-            {plugin.screenshots?.length ? (
+        <div class="shell detail-layout">
+          <article class="detail-main">
+            {!!plugin.screenshots?.length && (
               <section class="app-screenshots" aria-label={t.appProfile}>
                 {plugin.screenshots.map((screenshot) => (
                   <figure>
@@ -122,38 +121,10 @@ const contributionType = (item: PluginContribution) => {
                   </figure>
                 ))}
               </section>
-            ) : (
-              <section class={`app-profile app-profile-${iconVariant}`} aria-labelledby="app-profile-title">
-                <div class="app-profile-mark" aria-hidden="true">
-                  {plugin.icon ? (
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.25"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      {plugin.icon.paths.map((path) => <path d={path} />)}
-                    </svg>
-                  ) : (
-                    <span>{plugin.name.slice(0, 1)}</span>
-                  )}
-                </div>
-                <div>
-                  <p>{t.appProfile}</p>
-                  <h2 id="app-profile-title">{plugin.name}</h2>
-                  <div class="app-profile-chips">
-                    <span>{categoryLabels[plugin.category]}</span>
-                    {manifest?.views.slice(0, 3).map((view) => <span>{contributionType(view)}</span>)}
-                    {!manifest?.networkOrigins.length && <span>{t.offline}</span>}
-                  </div>
-                </div>
-              </section>
             )}
 
             <section class="detail-about" aria-labelledby="about-title">
-              <h2 id="about-title">{t.about}</h2>
+              <h2 id="about-title">{plugin.kind === "theme" ? t.aboutTheme : t.about}</h2>
               {details?.readmeHtml ? (
                 <div class="plugin-readme" set:html={details.readmeHtml} />
               ) : (
@@ -162,42 +133,44 @@ const contributionType = (item: PluginContribution) => {
             </section>
           </article>
 
-          <aside class="detail-sidebar" id="properties" data-detail-panel="properties">
+          <aside class="detail-sidebar" id="properties">
             <section class="detail-panel">
               <h2>{t.properties}</h2>
               <dl>
                 <div><dt>{t.identifier}</dt><dd><code>{plugin.id}</code></dd></div>
                 <div><dt>{t.category}</dt><dd>{categoryLabels[plugin.category]}</dd></div>
                 <div><dt>{t.version}</dt><dd>{plugin.version}</dd></div>
-                <div><dt>{t.apiVersion}</dt><dd>{manifest?.apiVersion ?? "1.0"}</dd></div>
-                <div><dt>{t.type}</dt><dd>{t.marketplace}</dd></div>
+                <div><dt>{t.apiVersion}</dt><dd>{manifest?.requiresPluginApi ?? manifest?.apiVersion ?? "1.0"}</dd></div>
+                <div><dt>{t.type}</dt><dd>{plugin.kind === "theme" ? t.theme : t.marketplace}</dd></div>
                 <div><dt>{t.compatibility}</dt><dd>{plugin.compatibility}</dd></div>
               </dl>
             </section>
 
-            <section class="detail-panel">
-              <h2>{t.capabilities}</h2>
-              <dl>
-                <div><dt>{t.views}</dt><dd>{manifest?.views.length ?? 0}</dd></div>
-                <div><dt>{t.actions}</dt><dd>{manifest?.actions.length ?? 0}</dd></div>
-                <div><dt>{t.formatters}</dt><dd>{manifest?.formatters.length ?? 0}</dd></div>
-              </dl>
-              {contributions.length > 0 && (
-                <ul class="capability-list">
-                  {contributions.map((item) => (
-                    <li>
-                      <span><strong>{item.title}</strong><small>{contributionType(item)}</small></span>
-                      {item.access && <em>{item.access === "write" ? t.write : t.read}</em>}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </section>
+            {plugin.kind !== "theme" && (
+              <section class="detail-panel">
+                <h2>{t.capabilities}</h2>
+                <dl>
+                  <div><dt>{t.views}</dt><dd>{manifest?.views.length ?? 0}</dd></div>
+                  <div><dt>{t.actions}</dt><dd>{manifest?.actions.length ?? 0}</dd></div>
+                  <div><dt>{t.formatters}</dt><dd>{manifest?.formatters.length ?? 0}</dd></div>
+                </dl>
+                {contributions.length > 0 && (
+                  <ul class="capability-list">
+                    {contributions.map((item) => (
+                      <li>
+                        <span><strong>{item.title}</strong><small>{contributionType(item)}</small></span>
+                        {item.access && <em>{item.access === "write" ? t.write : t.read}</em>}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+            )}
 
             <section class="detail-panel">
               <h2>{t.security}</h2>
               <dl>
-                <div><dt>{t.execution}</dt><dd>{t.sandbox}</dd></div>
+                <div><dt>{t.execution}</dt><dd>{plugin.kind === "theme" ? t.themeStyles : t.sandbox}</dd></div>
                 <div>
                   <dt>{t.network}</dt>
                   <dd>
@@ -229,39 +202,3 @@ const contributionType = (item: PluginContribution) => {
     )
   }
 </Layout>
-
-<script>
-  function setupDetailTabs() {
-    document.querySelectorAll("[data-detail-layout]").forEach((layout) => {
-      if (!(layout instanceof HTMLElement) || layout.dataset.tabsReady === "true") return;
-      const tabs = Array.from(document.querySelectorAll("[data-detail-tab]"));
-      const mobile = window.matchMedia("(max-width: 700px)");
-
-      const activate = (name: string) => {
-        if (!mobile.matches) return;
-        layout.dataset.activePanel = name;
-        tabs.forEach((tab) => {
-          const active = tab instanceof HTMLElement && tab.dataset.detailTab === name;
-          if (active) tab.setAttribute("aria-current", "page");
-          else tab.removeAttribute("aria-current");
-        });
-        layout.scrollIntoView({ behavior: "smooth", block: "start" });
-      };
-
-      tabs.forEach((tab) => {
-        if (!(tab instanceof HTMLAnchorElement)) return;
-        tab.addEventListener("click", (event) => {
-          if (!mobile.matches) return;
-          event.preventDefault();
-          activate(tab.dataset.detailTab || "overview");
-        });
-      });
-
-      if (window.location.hash === "#properties") activate("properties");
-      layout.dataset.tabsReady = "true";
-    });
-  }
-
-  setupDetailTabs();
-  document.addEventListener("astro:page-load", setupDetailTabs);
-</script>

@@ -4,7 +4,6 @@ import { messages, pluginCategoryMessages } from "../i18n";
 import Layout from "../layouts/Layout.astro";
 import { loadMarketplaceRegistry } from "../lib/marketplace-registry";
 import {
-  PLUGIN_CATEGORIES,
   PLUGIN_REGISTRY_REPO,
   pluginVisualVariant,
   type PluginRegistry,
@@ -30,25 +29,16 @@ try {
 }
 
 const categoryLabels = pluginCategoryMessages[locale];
-const availableCategories = PLUGIN_CATEGORIES.flatMap((category) => {
-  const count = registry?.plugins.filter((plugin) => plugin.category === category).length ?? 0;
-  return count > 0 ? [{ id: category, label: categoryLabels[category], count }] : [];
-});
 ---
 
 <Layout locale={locale} title={t.metaTitle} description={t.metaDescription}>
   <main data-marketplace data-locale={locale}>
     <section class="market-hero" aria-labelledby="market-title">
       <div class="shell">
-        <div class="market-kicker-row">
-          <p class="kicker">{t.eyebrow}</p>
-          <a class="registry-status" href={PLUGIN_REGISTRY_REPO}>
-            <span aria-hidden="true"></span>
-            {t.registry}
-            <span aria-hidden="true">↗</span>
-          </a>
-        </div>
-        <h1 id="market-title">{t.title}</h1>
+        <h1 id="market-title">
+          <span>{t.titleLead}</span>{locale === "en" && " "}
+          <span class="hero-title-accent">{t.titleAccent}</span>
+        </h1>
 
         {
           registry && (
@@ -74,30 +64,8 @@ const availableCategories = PLUGIN_CATEGORIES.flatMap((category) => {
       </div>
     </section>
 
-    <section class="catalog" aria-labelledby="catalog-title">
+    <section class="catalog" aria-label={t.catalog}>
       <div class="shell catalog-layout">
-        <div class="catalog-heading">
-          <div>
-            <p class="sidebar-label">{t.browse}</p>
-            <h2 id="catalog-title">{t.catalog}</h2>
-          </div>
-        </div>
-
-        {
-          registry && (
-            <div class="market-filters" role="group" aria-label={t.browse}>
-              <button type="button" data-plugin-filter="all" aria-pressed="true">
-                <span>{t.all}</span><span>{registry.plugins.length}</span>
-              </button>
-              {availableCategories.map((category) => (
-                <button type="button" data-plugin-filter={category.id} aria-pressed="false">
-                  <span>{category.label}</span><span>{category.count}</span>
-                </button>
-              ))}
-            </div>
-          )
-        }
-
         {
           !registry ? (
             <div class="catalog-unavailable">
@@ -109,10 +77,8 @@ const availableCategories = PLUGIN_CATEGORIES.flatMap((category) => {
             </div>
           ) : (
             <>
-              <ol class="plugin-grid" data-plugin-grid>
+              <ol class="plugin-grid">
                 {registry.plugins.map((plugin) => {
-                    const repoUrl = `https://github.com/${plugin.repo}`;
-                    const releaseUrl = `${repoUrl}/releases/tag/${encodeURIComponent(plugin.tag)}`;
                     const detailUrl = `${locale === "zh" ? "/zh" : ""}/plugins/${encodeURIComponent(plugin.id)}`;
                     const publisher = plugin.repo.split("/")[0];
                     const searchValue = [
@@ -120,6 +86,7 @@ const availableCategories = PLUGIN_CATEGORIES.flatMap((category) => {
                       plugin.id,
                       plugin.description,
                       plugin.compatibility,
+                      plugin.category,
                       categoryLabels[plugin.category],
                       publisher,
                     ]
@@ -130,45 +97,31 @@ const availableCategories = PLUGIN_CATEGORIES.flatMap((category) => {
                       <li
                         class="plugin-card"
                         data-plugin-card
-                        data-plugin-category={plugin.category}
                         data-search={searchValue}
                       >
-                        <div class="plugin-card-heading">
-                          <span class={`plugin-icon plugin-icon-${pluginVisualVariant(plugin.id)}`}>
-                            {plugin.icon ? (
-                              <svg
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.5"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                aria-hidden="true"
-                              >
-                                {plugin.icon.paths.map((path) => <path d={path} />)}
-                              </svg>
-                            ) : (
-                              <span>{plugin.name.slice(0, 1)}</span>
-                            )}
-                          </span>
-                          <div>
-                            <div class="plugin-title-row">
-                              <h3><a href={detailUrl}>{plugin.name}</a></h3>
-                              <span class={`plugin-category category-${plugin.category}`}>
-                                {categoryLabels[plugin.category]}
-                              </span>
-                            </div>
-                            <p class="plugin-id">{publisher} · {plugin.id}</p>
+                        <span class={`plugin-icon plugin-icon-${pluginVisualVariant(plugin.id)}`}>
+                          {plugin.icon ? (
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.5"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              aria-hidden="true"
+                            >
+                              {plugin.icon.paths.map((path) => <path d={path} />)}
+                            </svg>
+                          ) : (
+                            <span>{plugin.name.slice(0, 1)}</span>
+                          )}
+                        </span>
+                        <div class="plugin-card-copy">
+                          <div class="plugin-title-row">
+                            <h3><a href={detailUrl}>{plugin.name}</a></h3>
+                            <span class="plugin-category">{categoryLabels[plugin.category]}</span>
                           </div>
-                        </div>
-                        <p class="plugin-description">{plugin.description}</p>
-                        <div class="plugin-meta">
-                          <span>v{plugin.version}</span>
-                          <span>{plugin.compatibility}</span>
-                        </div>
-                        <div class="plugin-actions">
-                          <a href={repoUrl}>{t.source}</a>
-                          <a class="release-link" href={releaseUrl}>{t.release}<span aria-hidden="true">↗</span></a>
+                          <p class="plugin-description">{plugin.description}</p>
                         </div>
                       </li>
                     );
@@ -195,10 +148,7 @@ const availableCategories = PLUGIN_CATEGORIES.flatMap((category) => {
       const count = root.querySelector("[data-plugin-count]");
       const empty = root.querySelector("[data-plugin-empty]");
       const cards = Array.from(root.querySelectorAll("[data-plugin-card]"));
-      const filters = Array.from(root.querySelectorAll("[data-plugin-filter]"));
       if (!(input instanceof HTMLInputElement) || !(count instanceof HTMLElement)) return;
-
-      let activeFilter = "all";
 
       const update = () => {
         const query = input.value.trim().toLocaleLowerCase();
@@ -206,9 +156,7 @@ const availableCategories = PLUGIN_CATEGORIES.flatMap((category) => {
 
         cards.forEach((card) => {
           if (!(card instanceof HTMLElement)) return;
-          const matchesQuery = !query || (card.dataset.search || "").includes(query);
-          const matchesFilter = activeFilter === "all" || card.dataset.pluginCategory === activeFilter;
-          const matches = matchesQuery && matchesFilter;
+          const matches = !query || (card.dataset.search || "").includes(query);
           card.hidden = !matches;
           if (matches) visible += 1;
         });
@@ -221,17 +169,6 @@ const availableCategories = PLUGIN_CATEGORIES.flatMap((category) => {
       };
 
       input.addEventListener("input", update);
-      filters.forEach((filter) => {
-        if (!(filter instanceof HTMLButtonElement)) return;
-        filter.addEventListener("click", () => {
-          activeFilter = filter.dataset.pluginFilter || "all";
-          filters.forEach((candidate) => {
-            candidate.setAttribute("aria-pressed", String(candidate === filter));
-          });
-          update();
-        });
-      });
-
       root.dataset.ready = "true";
     });
   }

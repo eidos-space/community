@@ -11,12 +11,6 @@ importers:
       '@astrojs/cloudflare':
         specifier: 12.6.0
         version: 12.6.0(@types/node@26.6.2)(astro@5.11.0(@types/node@26.6.2)(rollup@4.63.4)(typescript@5.8.3)(yaml@2.9.1))(yaml@2.9.1)
-      '@fontsource/outfit':
-        specifier: 5.2.8
-        version: 5.2.8
-      '@fontsource/plus-jakarta-sans':
-        specifier: 5.2.8
-        version: 5.2.8
       astro:
         specifier: 5.11.0
         version: 5.11.0(@types/node@26.6.2)(rollup@4.63.4)(typescript@5.8.3)(yaml@2.9.1)
@@ -503,12 +497,6 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
-
-  '@fontsource/outfit@5.2.8':
-    resolution: {integrity: sha512-rXC6g0MqD7cOBjht0bMqc43qM6lRqDLML9KXsmg9uykz0wLQhy8Z/ajrMG6iyoT3NJR+MYgU+OEHp7uHoTb+Yw==}
-
-  '@fontsource/plus-jakarta-sans@5.2.8':
-    resolution: {integrity: sha512-P5qE49fqdeD+7DXH1KBxmMPlB17LTz1zvBhFH0tFzfnYTKVJVyb0pR6plh0ZGXxcB+Oayb54FZZw3V42/DawTw==}
 
   '@img/colour@1.1.0':
     resolution: {integrity: sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ==}
@@ -2709,10 +2697,6 @@ snapshots:
 
   '@esbuild/win32-x64@0.27.3':
     optional: true
-
-  '@fontsource/outfit@5.2.8': {}
-
-  '@fontsource/plus-jakarta-sans@5.2.8': {}
 
   '@img/colour@1.1.0': {}
 

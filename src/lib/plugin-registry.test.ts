@@ -53,6 +53,28 @@ test("rejects the retired preview release channel", () => {
   );
 });
 
+test("accepts theme plugins without a preview channel", () => {
+  const { preview: _preview, ...plugin } = validPlugin;
+  const registry = parsePluginRegistry({
+    schemaVersion: 1,
+    plugins: [{ ...plugin, id: "eidos.slate", kind: "theme", category: "themes" }],
+  });
+  assert.equal(registry.plugins[0]?.kind, "theme");
+  assert.equal(registry.plugins[0]?.category, "themes");
+});
+
+test("rejects themes whose kind and category disagree", () => {
+  for (const plugin of [
+    { ...validPlugin, category: "themes" },
+    { ...validPlugin, kind: "theme" },
+  ]) {
+    assert.throws(
+      () => parsePluginRegistry({ schemaVersion: 1, plugins: [plugin] }),
+      /contains no valid entries/u,
+    );
+  }
+});
+
 test("rejects unsupported registry schemas", () => {
   assert.throws(
     () => parsePluginRegistry({ schemaVersion: 2, plugins: [] }),
@@ -93,7 +115,7 @@ test("returns the last successful response if a refresh fails", async () => {
   assert.equal((await loader()).plugins[0]?.id, "eidos.chart");
 });
 
-test("uses a stable visual variant for the same plugin across list and detail views", () => {
+test("uses a stable visual variant for the same plugin across catalog and detail views", () => {
   assert.equal(pluginVisualVariant("eidos.map"), pluginVisualVariant("eidos.map"));
-  assert.ok([1, 2, 3].includes(pluginVisualVariant("eidos.chart")));
+  assert.ok([1, 2, 3, 4, 5, 6].includes(pluginVisualVariant("eidos.chart")));
 });

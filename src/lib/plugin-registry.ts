@@ -10,6 +10,7 @@ export const PLUGIN_CATEGORIES = [
   "automation",
   "integrations",
   "developer-tools",
+  "themes",
   "other",
 ] as const;
 export type PluginCategory = (typeof PLUGIN_CATEGORIES)[number];
@@ -18,6 +19,7 @@ const PLUGIN_REGISTRY_CACHE_KEY =
   "https://community.eidos.space/.well-known/plugins-registry-v1.json";
 
 export interface MarketplacePlugin {
+  kind?: "theme";
   id: string;
   name: string;
   description: string;
@@ -37,9 +39,9 @@ export interface PluginRegistry {
   plugins: MarketplacePlugin[];
 }
 
-export function pluginVisualVariant(id: string): 1 | 2 | 3 {
+export function pluginVisualVariant(id: string): 1 | 2 | 3 | 4 | 5 | 6 {
   const total = Array.from(id).reduce((sum, character) => sum + character.charCodeAt(0), 0);
-  return ((total % 3) + 1) as 1 | 2 | 3;
+  return ((total % 6) + 1) as 1 | 2 | 3 | 4 | 5 | 6;
 }
 
 const GITHUB_REPO = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/u;
@@ -69,7 +71,9 @@ function parsePlugin(value: unknown): MarketplacePlugin | null {
     !isNonEmptyString(value.asset) ||
     !isNonEmptyString(value.sha256) ||
     !SHA256.test(value.sha256) ||
-    value.preview !== false ||
+    (value.preview !== undefined && value.preview !== false) ||
+    (value.kind !== undefined && value.kind !== "theme") ||
+    (value.kind === "theme") !== (value.category === "themes") ||
     !isNonEmptyString(value.compatibility)
   ) {
     return null;
@@ -94,6 +98,7 @@ function parsePlugin(value: unknown): MarketplacePlugin | null {
     : [];
 
   return {
+    ...(value.kind === "theme" ? { kind: "theme" as const } : {}),
     id: value.id,
     name: value.name,
     description: value.description,

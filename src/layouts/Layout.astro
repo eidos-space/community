@@ -1,11 +1,8 @@
 ---
-import "@fontsource/outfit/700.css";
-import "@fontsource/outfit/800.css";
-import "@fontsource/plus-jakarta-sans/400.css";
-import "@fontsource/plus-jakarta-sans/500.css";
-import "@fontsource/plus-jakarta-sans/700.css";
 import type { Locale } from "../i18n";
 import { messages } from "../i18n";
+import EidosMark from "../components/EidosMark.astro";
+import Footer from "../components/Footer.astro";
 import "../styles/global.css";
 
 interface Props {
@@ -16,7 +13,9 @@ interface Props {
 
 const { locale, title, description } = Astro.props;
 const t = messages[locale];
-const languagePath = locale === "zh" ? "/" : "/zh/";
+const pathname = Astro.url.pathname;
+const englishPath = locale === "zh" ? pathname.replace(/^\/zh(?=\/|$)/, "") || "/" : pathname;
+const chinesePath = locale === "zh" ? pathname : `/zh${pathname}`;
 const docsPath =
   locale === "zh"
     ? "https://docs.eidos.space/zh-cn/plugins/guide/"
@@ -29,7 +28,7 @@ const docsPath =
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#FFFDF5" />
+    <meta name="theme-color" content="#ffffff" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
     <title>{title}</title>
@@ -37,27 +36,30 @@ const docsPath =
   <body>
     <header class="site-header">
       <div class="site-header-inner">
-        <a class="brand" href="https://eidos.space" aria-label="Eidos">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m12 2 8.5 4.8v9.8L12 21.4l-8.5-4.8V6.8L12 2Z" />
-            <path d="m7.3 8.6 4.7-2.7 4.7 2.7-4.7 2.7-4.7-2.7Zm0 3.3 4.7 2.7 4.7-2.7M12 11.3v6" />
-          </svg>
+        <a class="brand" href={locale === "zh" ? "/zh/" : "/"} aria-label={t.brand}>
+          <EidosMark />
           <span>{t.brand}</span>
         </a>
         <nav aria-label="Primary">
           <a href={docsPath}>{t.docs}</a>
           <a href="https://github.com/eidos-space/registry/blob/main/CONTRIBUTING.md">{t.submit}</a>
-          <a href={languagePath} lang={locale === "zh" ? "en" : "zh-CN"}>{t.language}</a>
+          <details class="language-menu">
+            <summary aria-label={t.language} title={t.language}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M3 12h18M12 3c2.7 2.5 4 5.5 4 9s-1.3 6.5-4 9M12 3c-2.7 2.5-4 5.5-4 9s1.3 6.5 4 9" />
+              </svg>
+              <span aria-hidden="true">⌄</span>
+            </summary>
+            <div class="language-options">
+              <a href={englishPath} lang="en" aria-current={locale === "en" ? "page" : undefined}>English</a>
+              <a href={chinesePath} lang="zh-CN" aria-current={locale === "zh" ? "page" : undefined}>简体中文</a>
+            </div>
+          </details>
         </nav>
       </div>
     </header>
     <slot />
-    <footer class="site-footer">
-      <div class="site-footer-inner">
-        <p>© {new Date().getFullYear()} Eidos</p>
-        <p>{t.footer}</p>
-        <a href="https://github.com/eidos-space/community">GitHub ↗</a>
-      </div>
-    </footer>
+    <Footer locale={locale} englishPath={englishPath} chinesePath={chinesePath} />
   </body>
 </html>

@@ -9,75 +9,130 @@ interface Messages {
   docs: string;
   submit: string;
   language: string;
-  eyebrow: string;
-  title: string;
-  registry: string;
+  titleLead: string;
+  titleAccent: string;
   searchLabel: string;
   searchPlaceholder: string;
   pluginCount: (count: number) => string;
-  browse: string;
-  all: string;
   catalog: string;
-  source: string;
-  release: string;
   noResultsTitle: string;
   noResultsBody: string;
   unavailableTitle: string;
   unavailableBody: string;
   openRegistry: string;
-  footer: string;
 }
 
 export const messages: Record<Locale, Messages> = {
   en: {
     metaTitle: "Eidos Plugin Marketplace",
     metaDescription: "Discover community plugins for Eidos Lite and eidos serve.",
-    brand: "Eidos Plugins",
+    brand: "Eidos",
     docs: "Developer docs",
     submit: "Submit a plugin",
-    language: "中文",
-    eyebrow: "Community marketplace",
-    title: "Apps for files you own.",
-    registry: "Open GitHub registry",
+    language: "Language",
+    titleLead: "Apps for",
+    titleAccent: "files you own.",
     searchLabel: "Search plugins",
     searchPlaceholder: "Search plugins",
     pluginCount: (count) => `${count} ${count === 1 ? "plugin" : "plugins"}`,
-    browse: "Categories",
-    all: "All plugins",
     catalog: "Plugins",
-    source: "Source",
-    release: "Release",
     noResultsTitle: "No plugins found",
     noResultsBody: "Try another name, capability, or plugin ID.",
     unavailableTitle: "The plugin catalog is temporarily unavailable.",
     unavailableBody: "You can inspect the registry directly on GitHub.",
     openRegistry: "Open registry",
-    footer: "Community plugins for user-owned files.",
   },
   zh: {
     metaTitle: "Eidos 插件市场",
     metaDescription: "发现适用于 Eidos Lite 与 eidos serve 的社区插件。",
-    brand: "Eidos 插件",
+    brand: "Eidos",
     docs: "开发文档",
     submit: "提交插件",
-    language: "English",
-    eyebrow: "社区插件市场",
-    title: "为自己的文件，\n选择本地应用。",
-    registry: "开放的 GitHub 注册表",
+    language: "语言",
+    titleLead: "为自己的文件，",
+    titleAccent: "找到更多可能。",
     searchLabel: "搜索插件",
     searchPlaceholder: "搜索插件",
     pluginCount: (count) => `${count} 个插件`,
-    browse: "分类",
-    all: "全部插件",
     catalog: "插件",
-    source: "源码",
-    release: "发布版本",
     noResultsTitle: "没有找到插件",
     noResultsBody: "试试其他名称、能力或插件 ID。",
     unavailableTitle: "暂时无法读取插件目录。",
     unavailableBody: "你仍然可以前往 GitHub 查看注册表。",
     openRegistry: "打开注册表",
-    footer: "面向用户自有文件的社区插件。",
+  },
+};
+
+interface FooterMessages {
+  description: string;
+  product: string;
+  developers: string;
+  ecosystem: string;
+  project: string;
+  sync: string;
+  publish: string;
+  pricing: string;
+  webEditor: string;
+  download: string;
+  changelog: string;
+  documentation: string;
+  buildGuide: string;
+  fileSpec: string;
+  versionControl: string;
+  support: string;
+  privacy: string;
+  terms: string;
+  openFormat: string;
+  localFirst: string;
+  fileOwnership: string;
+}
+
+export const footerMessages: Record<Locale, FooterMessages> = {
+  en: {
+    description: "Eidos brings documents, data, and tools together around files you own.",
+    product: "Product",
+    developers: "Developers",
+    ecosystem: "Ecosystem",
+    project: "Project",
+    sync: "Sync",
+    publish: "Publish",
+    pricing: "Pricing",
+    webEditor: "Web Editor",
+    download: "Download",
+    changelog: "Changelog",
+    documentation: "Documentation",
+    buildGuide: "Build guide",
+    fileSpec: "Eidos File spec",
+    versionControl: "Version Control",
+    support: "Support",
+    privacy: "Privacy",
+    terms: "Terms",
+    openFormat: "Open format",
+    localFirst: "Local-first",
+    fileOwnership: "File ownership",
+  },
+  zh: {
+    description: "Eidos 以你自己的文件为中心，连接文档、数据与工具。",
+    product: "产品",
+    developers: "开发者",
+    ecosystem: "生态",
+    project: "项目",
+    sync: "Sync",
+    publish: "Publish",
+    pricing: "价格",
+    webEditor: "Web 编辑器",
+    download: "下载",
+    changelog: "更新日志",
+    documentation: "文档",
+    buildGuide: "构建指南",
+    fileSpec: "Eidos File 规范",
+    versionControl: "版本控制",
+    support: "支持",
+    privacy: "隐私",
+    terms: "服务条款",
+    openFormat: "开放格式",
+    localFirst: "本地优先",
+    fileOwnership: "文件所有权",
   },
 };
 
@@ -85,19 +140,21 @@ export const pluginCategoryMessages = {
   en: {
     "data-visualization": "Data & visualization",
     "knowledge-and-writing": "Knowledge & writing",
-    productivity: "Productivity",
-    automation: "Automation",
-    integrations: "Integrations",
-    "developer-tools": "Developer tools",
+    productivity: "Tools & workflows",
+    automation: "Tools & workflows",
+    integrations: "Tools & workflows",
+    "developer-tools": "Tools & workflows",
+    themes: "Themes",
     other: "Other",
   },
   zh: {
     "data-visualization": "数据与可视化",
     "knowledge-and-writing": "知识与写作",
-    productivity: "效率工具",
-    automation: "自动化",
-    integrations: "集成",
-    "developer-tools": "开发者工具",
+    productivity: "工具与工作流",
+    automation: "工具与工作流",
+    integrations: "工具与工作流",
+    "developer-tools": "工具与工作流",
+    themes: "主题",
     other: "其他",
   },
 } satisfies Record<Locale, Record<PluginCategory, string>>;
@@ -106,15 +163,16 @@ export const detailMessages = {
   en: {
     back: "All plugins",
     marketplace: "Marketplace",
-    overview: "Overview",
     appProfile: "App profile",
     about: "About this app",
+    aboutTheme: "About this theme",
     properties: "Properties",
     identifier: "Identifier",
     category: "Category",
     version: "Version",
     apiVersion: "API version",
     type: "Type",
+    theme: "Theme",
     compatibility: "Compatibility",
     capabilities: "Capabilities",
     views: "Views",
@@ -123,6 +181,7 @@ export const detailMessages = {
     security: "Security & sandbox",
     execution: "Execution",
     sandbox: "Isolated iframe sandbox (null origin)",
+    themeStyles: "Validated local styles; no executable code",
     network: "Network access",
     offline: "No external network access (100% offline)",
     worker: "Dedicated worker support",
@@ -130,6 +189,7 @@ export const detailMessages = {
     checksum: "SHA-256 verified by Eidos Lite before installation",
     resources: "Resources",
     source: "Source repository",
+    install: "Install in Eidos Lite",
     release: "View release",
     read: "Read access",
     write: "Write access",
@@ -144,15 +204,16 @@ export const detailMessages = {
   zh: {
     back: "全部插件",
     marketplace: "插件市场",
-    overview: "概览",
     appProfile: "应用概览",
     about: "关于此应用",
+    aboutTheme: "关于此主题",
     properties: "属性",
     identifier: "标识符",
     category: "分类",
     version: "版本",
     apiVersion: "API 版本",
     type: "类型",
+    theme: "主题",
     compatibility: "兼容性",
     capabilities: "能力",
     views: "视图",
@@ -161,6 +222,7 @@ export const detailMessages = {
     security: "安全与沙箱",
     execution: "运行环境",
     sandbox: "隔离的 iframe 沙箱（null origin）",
+    themeStyles: "经校验的本地样式，不执行代码",
     network: "网络访问",
     offline: "不访问外部网络（完全离线）",
     worker: "支持独立 Worker",
@@ -168,6 +230,7 @@ export const detailMessages = {
     checksum: "Eidos Lite 安装前校验 SHA-256",
     resources: "资源",
     source: "源码仓库",
+    install: "安装到 Eidos Lite",
     release: "查看发布版本",
     read: "只读访问",
     write: "读写访问",

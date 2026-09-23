@@ -31,7 +31,7 @@ pnpm build
 
 ```sh
 pnpm exec wrangler login
-pnpm deploy
+pnpm run deploy
 ```
 
 Maintainers deploy locally. GitHub Actions only runs validation; it does not

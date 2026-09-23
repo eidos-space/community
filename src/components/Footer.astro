@@ -1,0 +1,112 @@
+---
+import type { Locale } from "../i18n";
+import { footerMessages, messages } from "../i18n";
+import EidosMark from "./EidosMark.astro";
+
+interface Props {
+  locale: Locale;
+  englishPath: string;
+  chinesePath: string;
+}
+
+const { locale, englishPath, chinesePath } = Astro.props;
+const t = footerMessages[locale];
+const languageLabel = messages[locale].language;
+const mainUrl = (path: string) => `https://eidos.space${locale === "zh" ? "/zh" : ""}${path}`;
+const docsUrl = (path: string) => `https://docs.eidos.space${locale === "zh" ? "/zh-cn" : ""}${path}`;
+
+const groups = [
+  {
+    title: t.product,
+    links: [
+      { label: t.sync, href: mainUrl("/sync") },
+      { label: t.publish, href: mainUrl("/publish") },
+      { label: t.pricing, href: mainUrl("/pricing") },
+      { label: t.webEditor, href: "https://editor.eidos.space", external: true },
+      { label: t.download, href: mainUrl("/download") },
+      { label: t.changelog, href: "https://github.com/mayneyao/eidos/releases", external: true },
+    ],
+  },
+  {
+    title: t.developers,
+    links: [
+      { label: t.documentation, href: docsUrl("/"), external: true },
+      { label: t.buildGuide, href: docsUrl("/developers/"), external: true },
+      { label: t.fileSpec, href: "https://github.com/mayneyao/eidos/blob/dev/docs/specs/eidos-file-1.0.md", external: true },
+      { label: "Runtime · npm", href: "https://www.npmjs.com/package/@eidos.space/eidos-file", external: true },
+    ],
+  },
+  {
+    title: t.ecosystem,
+    links: [
+      { label: t.versionControl, href: "https://graft.eidos.space", external: true },
+      { label: "GitHub", href: "https://github.com/mayneyao/eidos", external: true },
+    ],
+  },
+  {
+    title: t.project,
+    links: [
+      { label: "Discord", href: "https://discord.gg/cGQqjeFpZq", external: true },
+      { label: t.support, href: "mailto:support@eidos.space" },
+      { label: t.privacy, href: mainUrl("/privacy") },
+      { label: t.terms, href: mainUrl("/terms") },
+    ],
+  },
+];
+---
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="site-footer-main">
+      <div class="site-footer-brand-block">
+        <a class="site-footer-brand" href={mainUrl("/")} aria-label="Eidos">
+          <EidosMark />
+          <span>Eidos</span>
+        </a>
+        <p class="site-footer-description">{t.description}</p>
+      </div>
+
+      <nav class="site-footer-nav" aria-label={locale === "zh" ? "页脚导航" : "Footer navigation"}>
+        {groups.map((group) => (
+          <div class="site-footer-group">
+            <h2>{group.title}</h2>
+            <ul>
+              {group.links.map((link) => (
+                <li>
+                  <a href={link.href} target={link.external ? "_blank" : undefined} rel={link.external ? "noopener noreferrer" : undefined}>
+                    {link.label}{link.external && <span aria-hidden="true">↗</span>}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </nav>
+    </div>
+
+    <div class="site-footer-bottom">
+      <p>© {new Date().getFullYear()} Eidos</p>
+      <p class="site-footer-motto">
+        <a href="https://github.com/mayneyao/eidos/tree/dev/docs/specs" target="_blank" rel="noopener noreferrer">{t.openFormat}<span aria-hidden="true">↗</span></a>
+        <span aria-hidden="true"> · </span>
+        <a href="https://www.inkandswitch.com/essay/local-first/" target="_blank" rel="noopener noreferrer">{t.localFirst}<span aria-hidden="true">↗</span></a>
+        <span aria-hidden="true"> · </span>
+        {t.fileOwnership}
+      </p>
+      <details class="site-footer-language">
+        <summary aria-label={languageLabel} title={languageLabel}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M3 12h18M12 3c2.7 2.5 4 5.5 4 9s-1.3 6.5-4 9M12 3c-2.7 2.5-4 5.5-4 9s1.3 6.5-4 9" />
+          </svg>
+          <span>{locale === "zh" ? "中文" : "EN"}</span>
+          <span aria-hidden="true">⌄</span>
+        </summary>
+        <div class="site-footer-language-options">
+          <a href={englishPath} lang="en" aria-current={locale === "en" ? "page" : undefined}>English</a>
+          <a href={chinesePath} lang="zh-CN" aria-current={locale === "zh" ? "page" : undefined}>简体中文</a>
+        </div>
+      </details>
+    </div>
+  </div>
+</footer>
