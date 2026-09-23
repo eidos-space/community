@@ -134,7 +134,7 @@ const showThemes = section === "all" || section === "themes";
                         <span class="catalog-section-badge" data-count-plugins>{functionalPlugins.length}</span>
                       </div>
                       {section === "all" && (
-                        <a class="catalog-section-link" href={locale === "zh" ? "/zh/plugins/" : "/plugins/"}>
+                        <a class="catalog-section-link" href={locale === "zh" ? "/zh/plugins" : "/plugins"}>
                           {t.viewAllPlugins}
                         </a>
                       )}
@@ -204,7 +204,7 @@ const showThemes = section === "all" || section === "themes";
                         <span class="catalog-section-badge" data-count-themes>{themePlugins.length}</span>
                       </div>
                       {section === "all" && (
-                        <a class="catalog-section-link" href={locale === "zh" ? "/zh/themes/" : "/themes/"}>
+                        <a class="catalog-section-link" href={locale === "zh" ? "/zh/themes" : "/themes"}>
                           {t.viewAllThemes}
                         </a>
                       )}

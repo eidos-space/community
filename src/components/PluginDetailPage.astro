@@ -53,11 +53,11 @@ const contributionType = (item: PluginContribution) => {
 const isTheme = plugin?.kind === "theme";
 const backUrl = isTheme
   ? locale === "zh"
-    ? "/zh/themes/"
-    : "/themes/"
+    ? "/zh/themes"
+    : "/themes"
   : locale === "zh"
-    ? "/zh/plugins/"
-    : "/plugins/";
+    ? "/zh/plugins"
+    : "/plugins";
 ---
 
 <Layout
