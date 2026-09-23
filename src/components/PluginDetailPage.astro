@@ -50,6 +50,14 @@ const contributionType = (item: PluginContribution) => {
   if (item.context === "page") return t.page;
   return t.contribution;
 };
+const isTheme = plugin?.kind === "theme";
+const backUrl = isTheme
+  ? locale === "zh"
+    ? "/zh/themes/"
+    : "/themes/"
+  : locale === "zh"
+    ? "/zh/plugins/"
+    : "/plugins/";
 ---
 
 <Layout
@@ -60,6 +68,7 @@ const contributionType = (item: PluginContribution) => {
       : `${t.notFound} · Eidos`
   }
   description={plugin?.description ?? t.notFoundBody}
+  currentSection={isTheme ? "themes" : "plugins"}
 >
   {
     plugin ? (
@@ -68,11 +77,11 @@ const contributionType = (item: PluginContribution) => {
           <div class="shell">
             <a
               class="detail-back"
-              href={plugin.kind === "theme" ? `${listPath}?tab=themes` : listPath}
-              aria-label={plugin.kind === "theme" ? t.backThemes : t.back}
+              href={backUrl}
+              aria-label={isTheme ? t.backThemes : t.back}
             >
               <span aria-hidden="true">←</span>
-              {plugin.kind === "theme" ? t.backThemes : t.back}
+              {isTheme ? t.backThemes : t.back}
             </a>
 
             <div class="detail-identity">

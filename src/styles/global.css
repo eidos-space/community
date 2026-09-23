@@ -80,18 +80,57 @@ summary:focus-visible {
   fill: currentColor;
 }
 
-.site-header nav { display: flex; align-items: center; gap: clamp(16px, 3vw, 34px); }
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 8px;
+  background: var(--soft);
+  margin-left: clamp(14px, 2.5vw, 28px);
+  margin-right: auto;
+}
 
-.site-header nav a {
+.site-nav-link {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 13px;
+  border-radius: 6px;
+  color: var(--ink-muted);
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 140ms ease, background-color 140ms ease, box-shadow 140ms ease;
+}
+
+.site-nav-link:hover {
+  color: var(--ink);
+}
+
+.site-nav-link.is-active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 3px oklch(0.16 0.012 230 / 6%), 0 1px 2px oklch(0.16 0.012 230 / 4%);
+}
+
+.site-header-actions {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 3vw, 34px);
+}
+
+.site-header-actions a {
   padding-block: 11px;
   color: var(--ink-muted);
   font-size: 0.76rem;
   transition: color 160ms ease;
 }
 
-.site-header nav a:hover { color: var(--accent); }
-.site-header nav a:nth-child(2) { color: var(--accent-hover); font-weight: 650; }
-.site-header nav a:nth-child(2):hover { color: var(--ink); }
+.site-header-actions a:hover { color: var(--accent); }
+.site-header-actions a:nth-child(2) { color: var(--accent-hover); font-weight: 650; }
+.site-header-actions a:nth-child(2):hover { color: var(--ink); }
 
 .language-menu { position: relative; }
 .language-menu summary { display: flex; min-width: 42px; min-height: 42px; align-items: center; justify-content: center; gap: 3px; border-radius: 8px; color: var(--ink-muted); cursor: pointer; list-style: none; }
@@ -101,9 +140,9 @@ summary:focus-visible {
 .language-menu summary svg { width: 18px; height: 18px; }
 .language-menu summary span { margin-top: -5px; font-size: 0.95rem; }
 .language-options { position: absolute; top: calc(100% + 8px); right: 0; display: grid; min-width: 155px; padding: 6px; border-radius: 10px; background: var(--surface); box-shadow: 0 12px 32px oklch(0.16 0.012 230 / 12%); }
-.site-header nav .language-options a { display: flex; min-height: 36px; align-items: center; padding: 7px 11px; border-radius: 7px; color: var(--ink); font-size: 0.78rem; white-space: nowrap; }
-.site-header nav .language-options a:hover { background: var(--soft); }
-.site-header nav .language-options a[aria-current="page"] { color: var(--accent); font-weight: 600; }
+.site-header .language-options a { display: flex; min-height: 36px; align-items: center; padding: 7px 11px; border-radius: 7px; color: var(--ink); font-size: 0.78rem; white-space: nowrap; }
+.site-header .language-options a:hover { background: var(--soft); }
+.site-header .language-options a[aria-current="page"] { color: var(--accent); font-weight: 600; }
 
 .market-hero {
   overflow: hidden;
@@ -155,69 +194,6 @@ summary:focus-visible {
 .market-search input::placeholder { color: var(--ink-muted); }
 .market-count { color: var(--ink-muted); font-size: 0.74rem; white-space: nowrap; }
 
-.market-tabs-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-top: var(--space-md);
-}
-
-.market-tabs {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px;
-  border-radius: 10px;
-  background: var(--soft);
-}
-
-.market-tab {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 34px;
-  padding: 6px 14px;
-  border: 0;
-  border-radius: 7px;
-  background: transparent;
-  color: var(--ink-muted);
-  font-size: 0.82rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 140ms ease;
-}
-
-.market-tab:hover {
-  color: var(--ink);
-  background: oklch(0.945 0.018 215);
-}
-
-.market-tab.is-active {
-  background: var(--surface);
-  color: var(--ink);
-  font-weight: 600;
-  box-shadow: 0 1px 3px oklch(0.16 0.012 230 / 6%), 0 1px 2px oklch(0.16 0.012 230 / 4%);
-}
-
-.tab-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 18px;
-  height: 18px;
-  padding-inline: 5px;
-  border-radius: 9999px;
-  background: oklch(0.91 0.015 220);
-  color: var(--ink-muted);
-  font-size: 0.7rem;
-  font-weight: 600;
-  line-height: 1;
-}
-
-.market-tab.is-active .tab-badge {
-  background: var(--soft);
-  color: var(--accent-hover);
-}
-
 .catalog { background: var(--surface); }
 
 .catalog-layout { padding-block: var(--space-xl) clamp(88px, 10vw, 130px); }
@@ -241,7 +217,32 @@ summary:focus-visible {
 }
 
 .catalog-section-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   text-align: left;
+}
+
+.catalog-section-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.catalog-section-link {
+  font-size: 0.8rem;
+  font-weight: 550;
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 140ms ease;
+  white-space: nowrap;
+}
+
+.catalog-section-link:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .catalog-section-title-row {
@@ -640,9 +641,26 @@ summary:focus-visible {
   .shell,
   .site-header-inner { width: min(calc(100% - 36px), var(--shell)); }
   .site-footer-inner { width: calc(100% - 36px); }
-  .site-header-inner { flex-wrap: wrap; gap: 2px 12px; padding-block: 14px 8px; }
-  .site-header nav { width: 100%; justify-content: space-between; gap: 8px; }
-  .site-header nav a { padding-block: 9px; font-size: 0.72rem; }
+  .site-header-inner { flex-wrap: wrap; gap: 8px 12px; padding-block: 10px 10px; }
+  .brand { order: 1; }
+  .site-header-actions { order: 2; margin-left: auto; gap: 14px; }
+  .site-header-actions a { padding-block: 6px; font-size: 0.72rem; }
+  .site-nav {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 4px;
+    display: flex;
+    justify-content: stretch;
+  }
+  .site-nav-link {
+    flex: 1;
+    justify-content: center;
+    text-align: center;
+    height: 32px;
+    font-size: 0.8rem;
+  }
   .market-hero .shell { padding-block: 24px 28px; }
   .market-hero h1 { font-size: clamp(1.25rem, 5.6vw, 1.7rem); letter-spacing: -0.065em; }
   .market-search { margin-top: 20px; }

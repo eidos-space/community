@@ -5,14 +5,24 @@ export type Locale = "en" | "zh";
 interface Messages {
   metaTitle: string;
   metaDescription: string;
+  pluginsMetaTitle: string;
+  pluginsMetaDescription: string;
+  themesMetaTitle: string;
+  themesMetaDescription: string;
   brand: string;
   docs: string;
   submit: string;
   language: string;
   titleLead: string;
   titleAccent: string;
+  pluginsTitleLead: string;
+  pluginsTitleAccent: string;
+  themesTitleLead: string;
+  themesTitleAccent: string;
   searchLabel: string;
   searchPlaceholder: string;
+  searchPluginsPlaceholder: string;
+  searchThemesPlaceholder: string;
   tabsLabel: string;
   tabAll: string;
   tabPlugins: string;
@@ -24,6 +34,8 @@ interface Messages {
   pluginCount: (count: number) => string;
   themeCount: (count: number) => string;
   combinedCount: (plugins: number, themes: number) => string;
+  viewAllPlugins: string;
+  viewAllThemes: string;
   catalog: string;
   noResultsTitle: string;
   noResultsBody: string;
@@ -36,14 +48,24 @@ export const messages: Record<Locale, Messages> = {
   en: {
     metaTitle: "Eidos Community · Plugins & Themes",
     metaDescription: "Discover community plugins and themes for Eidos Lite and eidos serve.",
+    pluginsMetaTitle: "Plugins · Eidos Community",
+    pluginsMetaDescription: "Discover interactive views, editors, and automations for Eidos Lite and eidos serve.",
+    themesMetaTitle: "Themes · Eidos Community",
+    themesMetaDescription: "Discover visual palettes, typography, and styling for Eidos Lite.",
     brand: "Eidos",
     docs: "Developer docs",
     submit: "Submit a plugin",
     language: "Language",
     titleLead: "Apps for",
     titleAccent: "files you own.",
+    pluginsTitleLead: "Plugins for",
+    pluginsTitleAccent: "files you own.",
+    themesTitleLead: "Themes for",
+    themesTitleAccent: "Eidos Lite.",
     searchLabel: "Search plugins and themes",
     searchPlaceholder: "Search plugins and themes",
+    searchPluginsPlaceholder: "Search plugins",
+    searchThemesPlaceholder: "Search themes",
     tabsLabel: "Filter by type",
     tabAll: "All",
     tabPlugins: "Plugins",
@@ -56,6 +78,8 @@ export const messages: Record<Locale, Messages> = {
     themeCount: (count) => `${count} ${count === 1 ? "theme" : "themes"}`,
     combinedCount: (plugins, themes) =>
       `${plugins} ${plugins === 1 ? "plugin" : "plugins"}, ${themes} ${themes === 1 ? "theme" : "themes"}`,
+    viewAllPlugins: "View all plugins →",
+    viewAllThemes: "View all themes →",
     catalog: "Catalog",
     noResultsTitle: "No results found",
     noResultsBody: "Try another name, capability, or keyword.",
@@ -66,14 +90,24 @@ export const messages: Record<Locale, Messages> = {
   zh: {
     metaTitle: "Eidos 社区 · 插件与主题",
     metaDescription: "发现适用于 Eidos Lite 与 eidos serve 的社区插件与外观主题。",
+    pluginsMetaTitle: "功能插件 · Eidos 社区",
+    pluginsMetaDescription: "发现适用于 Eidos Lite 与 eidos serve 的功能扩展与自动化插件。",
+    themesMetaTitle: "外观主题 · Eidos 社区",
+    themesMetaDescription: "发现适用于 Eidos Lite 的外观主题、配色与排版字体。",
     brand: "Eidos",
     docs: "开发文档",
     submit: "提交插件",
     language: "语言",
     titleLead: "为自己的文件，",
     titleAccent: "找到更多可能。",
+    pluginsTitleLead: "功能插件 · 为自己的文件，",
+    pluginsTitleAccent: "找到更多可能。",
+    themesTitleLead: "外观主题 · 随心定制，",
+    themesTitleAccent: "属于你的视觉风格。",
     searchLabel: "搜索插件与主题",
     searchPlaceholder: "搜索插件与主题",
+    searchPluginsPlaceholder: "搜索功能插件",
+    searchThemesPlaceholder: "搜索外观主题",
     tabsLabel: "按类型筛选",
     tabAll: "全部",
     tabPlugins: "插件",
@@ -85,6 +119,8 @@ export const messages: Record<Locale, Messages> = {
     pluginCount: (count) => `${count} 个插件`,
     themeCount: (count) => `${count} 款主题`,
     combinedCount: (plugins, themes) => `${plugins} 个插件，${themes} 款主题`,
+    viewAllPlugins: "浏览全部插件 →",
+    viewAllThemes: "浏览全部主题 →",
     catalog: "目录",
     noResultsTitle: "没有找到结果",
     noResultsBody: "试试其他名称、能力或关键词。",
