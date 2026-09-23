@@ -9,7 +9,7 @@ interface Props {
   locale: Locale;
   title: string;
   description: string;
-  currentSection?: "all" | "plugins" | "themes";
+  currentSection?: "plugins" | "themes";
 }
 
 const { locale, title, description, currentSection: propSection } = Astro.props;
@@ -21,21 +21,18 @@ let currentSection = propSection;
 if (!currentSection) {
   if (pathname.includes("/themes")) {
     currentSection = "themes";
-  } else if (pathname.includes("/plugins")) {
-    currentSection = "plugins";
   } else {
-    currentSection = "all";
+    currentSection = "plugins";
   }
 }
 
 const englishPath = isZh ? pathname.replace(/^\/zh(?=\/|$)/, "") || "/" : pathname;
-const chinesePath = isZh ? pathname : `/zh${pathname}`;
+const chinesePath = isZh ? pathname : `/zh${pathname === "/" ? "" : pathname}`;
 const docsPath = isZh
   ? "https://docs.eidos.space/zh-cn/plugins/guide/"
   : "https://docs.eidos.space/plugins/guide/";
 
-const allUrl = isZh ? "/zh" : "/";
-const pluginsUrl = isZh ? "/zh/plugins" : "/plugins";
+const pluginsUrl = isZh ? "/zh" : "/";
 const themesUrl = isZh ? "/zh/themes" : "/themes";
 ---
 
@@ -53,33 +50,28 @@ const themesUrl = isZh ? "/zh/themes" : "/themes";
   <body>
     <header class="site-header">
       <div class="site-header-inner">
-        <a class="brand" href={allUrl} aria-label={t.brand}>
-          <EidosMark />
-          <span>{t.brand}</span>
-        </a>
-        <nav class="site-nav" aria-label="Catalog navigation">
-          <a
-            href={allUrl}
-            class={`site-nav-link ${currentSection === "all" ? "is-active" : ""}`}
-            aria-current={currentSection === "all" ? "page" : undefined}
-          >
-            {t.tabAll}
+        <div class="site-header-brand-group">
+          <a class="brand" href={pluginsUrl} aria-label={t.brand}>
+            <EidosMark />
+            <span>{t.brand}</span>
           </a>
-          <a
-            href={pluginsUrl}
-            class={`site-nav-link ${currentSection === "plugins" ? "is-active" : ""}`}
-            aria-current={currentSection === "plugins" ? "page" : undefined}
-          >
-            {t.tabPlugins}
-          </a>
-          <a
-            href={themesUrl}
-            class={`site-nav-link ${currentSection === "themes" ? "is-active" : ""}`}
-            aria-current={currentSection === "themes" ? "page" : undefined}
-          >
-            {t.tabThemes}
-          </a>
-        </nav>
+          <nav class="site-header-nav" aria-label="Catalog navigation">
+            <a
+              href={pluginsUrl}
+              class={`site-nav-link ${currentSection === "plugins" ? "is-active" : ""}`}
+              aria-current={currentSection === "plugins" ? "page" : undefined}
+            >
+              {t.tabPlugins}
+            </a>
+            <a
+              href={themesUrl}
+              class={`site-nav-link ${currentSection === "themes" ? "is-active" : ""}`}
+              aria-current={currentSection === "themes" ? "page" : undefined}
+            >
+              {t.tabThemes}
+            </a>
+          </nav>
+        </div>
         <nav class="site-header-actions" aria-label="Primary">
           <a href={docsPath}>{t.docs}</a>
           <a href="https://github.com/eidos-space/registry/blob/main/CONTRIBUTING.md">{t.submit}</a>

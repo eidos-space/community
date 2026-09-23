@@ -8,14 +8,13 @@ import {
   pluginVisualVariant,
   type PluginRegistry,
 } from "../lib/plugin-registry";
-import { getThemePalette } from "../lib/theme-visuals";
 
 interface Props {
   locale: Locale;
-  section?: "all" | "plugins" | "themes";
+  section?: "plugins" | "themes";
 }
 
-const { locale, section = "all" } = Astro.props;
+const { locale, section = "plugins" } = Astro.props;
 const t = messages[locale];
 let registry: PluginRegistry | undefined;
 
@@ -34,43 +33,15 @@ const categoryLabels = pluginCategoryMessages[locale];
 const functionalPlugins = registry ? registry.plugins.filter((plugin) => plugin.kind !== "theme") : [];
 const themePlugins = registry ? registry.plugins.filter((plugin) => plugin.kind === "theme") : [];
 
-const pageTitle =
-  section === "plugins"
-    ? t.pluginsMetaTitle
-    : section === "themes"
-      ? t.themesMetaTitle
-      : t.metaTitle;
+const isThemes = section === "themes";
+const displayedPlugins = isThemes ? themePlugins : functionalPlugins;
 
-const pageDesc =
-  section === "plugins"
-    ? t.pluginsMetaDescription
-    : section === "themes"
-      ? t.themesMetaDescription
-      : t.metaDescription;
-
-const heroTitleLead =
-  section === "plugins"
-    ? t.pluginsTitleLead
-    : section === "themes"
-      ? t.themesTitleLead
-      : t.titleLead;
-
-const heroTitleAccent =
-  section === "plugins"
-    ? t.pluginsTitleAccent
-    : section === "themes"
-      ? t.themesTitleAccent
-      : t.titleAccent;
-
-const searchPlaceholder =
-  section === "plugins"
-    ? t.searchPluginsPlaceholder
-    : section === "themes"
-      ? t.searchThemesPlaceholder
-      : t.searchPlaceholder;
-
-const showPlugins = section === "all" || section === "plugins";
-const showThemes = section === "all" || section === "themes";
+const pageTitle = isThemes ? t.themesMetaTitle : t.pluginsMetaTitle;
+const pageDesc = isThemes ? t.themesMetaDescription : t.pluginsMetaDescription;
+const searchPlaceholder = isThemes ? t.searchThemesPlaceholder : t.searchPluginsPlaceholder;
+const itemsCount = isThemes
+  ? t.themeCount(themePlugins.length)
+  : t.pluginCount(functionalPlugins.length);
 ---
 
 <Layout locale={locale} title={pageTitle} description={pageDesc} currentSection={section}>
@@ -78,8 +49,8 @@ const showThemes = section === "all" || section === "themes";
     <section class="market-hero" aria-labelledby="market-title">
       <div class="shell">
         <h1 id="market-title">
-          <span>{heroTitleLead}</span>{locale === "en" && " "}
-          <span class="hero-title-accent">{heroTitleAccent}</span>
+          <span>{t.titleLead}</span>{locale === "en" && " "}
+          <span class="hero-title-accent">{t.titleAccent}</span>
         </h1>
 
         {
@@ -98,13 +69,7 @@ const showThemes = section === "all" || section === "themes";
                 data-plugin-search
               />
               <span class="market-count" aria-live="polite" data-plugin-count>
-                {
-                  section === "plugins"
-                    ? t.pluginCount(functionalPlugins.length)
-                    : section === "themes"
-                      ? t.themeCount(themePlugins.length)
-                      : t.combinedCount(functionalPlugins.length, themePlugins.length)
-                }
+                {itemsCount}
               </span>
             </label>
           )
@@ -125,185 +90,59 @@ const showThemes = section === "all" || section === "themes";
             </div>
           ) : (
             <div class="catalog-sections">
-              {showPlugins && (
-                <section class="catalog-section" data-section="plugins" aria-labelledby="heading-plugins">
-                  <div class="catalog-section-header">
-                    <div class="catalog-section-top-row">
-                      <div class="catalog-section-title-row">
-                        <h2 id="heading-plugins">{t.pluginsTitle}</h2>
-                        <span class="catalog-section-badge" data-count-plugins>{functionalPlugins.length}</span>
+              <ol class="plugin-grid" data-grid-plugins>
+                {displayedPlugins.map((plugin) => {
+                  const detailUrl = isThemes
+                    ? `${locale === "zh" ? "/zh" : ""}/themes/${encodeURIComponent(plugin.id)}`
+                    : `${locale === "zh" ? "/zh" : ""}/plugins/${encodeURIComponent(plugin.id)}`;
+                  const publisher = plugin.repo.split("/")[0];
+                  const searchValue = [
+                    plugin.name,
+                    plugin.id,
+                    plugin.description,
+                    plugin.compatibility,
+                    plugin.category,
+                    categoryLabels[plugin.category],
+                    publisher,
+                  ]
+                    .join(" ")
+                    .toLocaleLowerCase();
+
+                  return (
+                    <li
+                      class="plugin-card"
+                      data-plugin-card
+                      data-kind={plugin.kind}
+                      data-search={searchValue}
+                    >
+                      <span class={`plugin-icon plugin-icon-${pluginVisualVariant(plugin.id)}`}>
+                        {plugin.icon ? (
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                          >
+                            {plugin.icon.paths.map((path) => <path d={path} />)}
+                          </svg>
+                        ) : (
+                          <span>{plugin.name.slice(0, 1)}</span>
+                        )}
+                      </span>
+                      <div class="plugin-card-copy">
+                        <div class="plugin-title-row">
+                          <h3><a href={detailUrl}>{plugin.name}</a></h3>
+                          <span class="plugin-category">{categoryLabels[plugin.category]}</span>
+                        </div>
+                        <p class="plugin-description">{plugin.description}</p>
                       </div>
-                      {section === "all" && (
-                        <a class="catalog-section-link" href={locale === "zh" ? "/zh/plugins" : "/plugins"}>
-                          {t.viewAllPlugins}
-                        </a>
-                      )}
-                    </div>
-                    <p class="catalog-section-desc">{t.pluginsSubtitle}</p>
-                  </div>
-                  <ol class="plugin-grid" data-grid-plugins>
-                    {functionalPlugins.map((plugin) => {
-                      const detailUrl = `${locale === "zh" ? "/zh" : ""}/plugins/${encodeURIComponent(plugin.id)}`;
-                      const publisher = plugin.repo.split("/")[0];
-                      const searchValue = [
-                        plugin.name,
-                        plugin.id,
-                        plugin.description,
-                        plugin.compatibility,
-                        plugin.category,
-                        categoryLabels[plugin.category],
-                        publisher,
-                      ]
-                        .join(" ")
-                        .toLocaleLowerCase();
-
-                      return (
-                        <li
-                          class="plugin-card"
-                          data-plugin-card
-                          data-kind="plugin"
-                          data-search={searchValue}
-                        >
-                          <span class={`plugin-icon plugin-icon-${pluginVisualVariant(plugin.id)}`}>
-                            {plugin.icon ? (
-                              <svg
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.5"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                aria-hidden="true"
-                              >
-                                {plugin.icon.paths.map((path) => <path d={path} />)}
-                              </svg>
-                            ) : (
-                              <span>{plugin.name.slice(0, 1)}</span>
-                            )}
-                          </span>
-                          <div class="plugin-card-copy">
-                            <div class="plugin-title-row">
-                              <h3><a href={detailUrl}>{plugin.name}</a></h3>
-                              <span class="plugin-category">{categoryLabels[plugin.category]}</span>
-                            </div>
-                            <p class="plugin-description">{plugin.description}</p>
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ol>
-                </section>
-              )}
-
-              {showThemes && (
-                <section class="catalog-section" data-section="themes" aria-labelledby="heading-themes">
-                  <div class="catalog-section-header">
-                    <div class="catalog-section-top-row">
-                      <div class="catalog-section-title-row">
-                        <h2 id="heading-themes">{t.themesTitle}</h2>
-                        <span class="catalog-section-badge" data-count-themes>{themePlugins.length}</span>
-                      </div>
-                      {section === "all" && (
-                        <a class="catalog-section-link" href={locale === "zh" ? "/zh/themes" : "/themes"}>
-                          {t.viewAllThemes}
-                        </a>
-                      )}
-                    </div>
-                    <p class="catalog-section-desc">{t.themesSubtitle}</p>
-                  </div>
-                  <ol class="theme-grid" data-grid-themes>
-                    {themePlugins.map((plugin) => {
-                      const detailUrl = `${locale === "zh" ? "/zh" : ""}/plugins/${encodeURIComponent(plugin.id)}`;
-                      const publisher = plugin.repo.split("/")[0];
-                      const palette = getThemePalette(plugin.id);
-                      const tags = palette.tags[locale] || palette.tags.en;
-                      const searchValue = [
-                        plugin.name,
-                        plugin.id,
-                        plugin.description,
-                        plugin.compatibility,
-                        plugin.category,
-                        categoryLabels[plugin.category],
-                        publisher,
-                        ...tags,
-                      ]
-                        .join(" ")
-                        .toLocaleLowerCase();
-
-                      return (
-                        <li
-                          class="theme-card"
-                          data-plugin-card
-                          data-kind="theme"
-                          data-search={searchValue}
-                        >
-                          <div class="theme-palette-preview">
-                            <div
-                              class="theme-palette-half theme-palette-light"
-                              style={`background: ${palette.light.surface}; color: ${palette.light.ink};`}
-                            >
-                              <div class="theme-palette-head">
-                                <span class="theme-mode-label">{locale === "zh" ? "浅色" : "Light"}</span>
-                                <span class="theme-swatch" style={`background: ${palette.light.accent};`} title="Accent color" />
-                              </div>
-                              <div class="theme-sample-text" style={`font-family: ${palette.fontFamily || "inherit"};`}>
-                                {palette.fontSample || "Aa Bb 123"}
-                              </div>
-                            </div>
-                            <div
-                              class="theme-palette-half theme-palette-dark"
-                              style={`background: ${palette.dark.surface}; color: ${palette.dark.ink};`}
-                            >
-                              <div class="theme-palette-head">
-                                <span class="theme-mode-label">{locale === "zh" ? "深色" : "Dark"}</span>
-                                <span class="theme-swatch" style={`background: ${palette.dark.accent};`} title="Accent color" />
-                              </div>
-                              <div class="theme-sample-text" style={`font-family: ${palette.fontFamily || "inherit"};`}>
-                                {palette.fontSample || "Aa Bb 123"}
-                              </div>
-                            </div>
-                          </div>
-
-                          <div class="theme-card-body">
-                            <div class="theme-card-header">
-                              <span class={`plugin-icon plugin-icon-theme plugin-icon-${pluginVisualVariant(plugin.id)}`}>
-                                {plugin.icon ? (
-                                  <svg
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="1.5"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    aria-hidden="true"
-                                  >
-                                    {plugin.icon.paths.map((path) => <path d={path} />)}
-                                  </svg>
-                                ) : (
-                                  <span>{plugin.name.slice(0, 1)}</span>
-                                )}
-                              </span>
-                              <div class="theme-card-titles">
-                                <div class="plugin-title-row">
-                                  <h3><a href={detailUrl}>{plugin.name}</a></h3>
-                                  <span class="plugin-category">{categoryLabels[plugin.category]}</span>
-                                </div>
-                                <p class="plugin-description">{plugin.description}</p>
-                              </div>
-                            </div>
-
-                            <div class="theme-tags" aria-label="Theme features">
-                              {tags.map((tag) => (
-                                <span class="theme-tag">{tag}</span>
-                              ))}
-                            </div>
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ol>
-                </section>
-              )}
+                    </li>
+                  );
+                })}
+              </ol>
 
               <div class="catalog-empty" data-plugin-empty hidden>
                 <h3>{t.noResultsTitle}</h3>
@@ -325,79 +164,33 @@ const showThemes = section === "all" || section === "themes";
       const input = root.querySelector("[data-plugin-search]");
       const count = root.querySelector("[data-plugin-count]");
       const empty = root.querySelector("[data-plugin-empty]");
-      const currentSection = root.dataset.section || "all";
+      const isThemes = root.dataset.section === "themes";
       const isZh = root.dataset.locale === "zh";
-
-      const pluginSection = root.querySelector<HTMLElement>("[data-section='plugins']");
-      const themeSection = root.querySelector<HTMLElement>("[data-section='themes']");
-      const pluginBadge = root.querySelector<HTMLElement>("[data-count-plugins]");
-      const themeBadge = root.querySelector<HTMLElement>("[data-count-themes]");
       const cards = Array.from(root.querySelectorAll<HTMLElement>("[data-plugin-card]"));
 
       if (!(input instanceof HTMLInputElement) || !(count instanceof HTMLElement)) return;
 
-      const formatCount = (plugins: number, themes: number) => {
-        if (currentSection === "plugins") {
-          return isZh ? `${plugins} 个插件` : `${plugins} ${plugins === 1 ? "plugin" : "plugins"}`;
+      const formatCount = (n: number) => {
+        if (isThemes) {
+          return isZh ? `${n} 款主题` : `${n} ${n === 1 ? "theme" : "themes"}`;
         }
-        if (currentSection === "themes") {
-          return isZh ? `${themes} 款主题` : `${themes} ${themes === 1 ? "theme" : "themes"}`;
-        }
-        if (plugins > 0 && themes > 0) {
-          return isZh
-            ? `${plugins} 个插件，${themes} 款主题`
-            : `${plugins} ${plugins === 1 ? "plugin" : "plugins"}, ${themes} ${themes === 1 ? "theme" : "themes"}`;
-        }
-        if (plugins > 0) {
-          return isZh ? `${plugins} 个插件` : `${plugins} ${plugins === 1 ? "plugin" : "plugins"}`;
-        }
-        if (themes > 0) {
-          return isZh ? `${themes} 款主题` : `${themes} ${themes === 1 ? "theme" : "themes"}`;
-        }
-        return isZh ? "0 个结果" : "0 results";
+        return isZh ? `${n} 个插件` : `${n} ${n === 1 ? "plugin" : "plugins"}`;
       };
 
       const update = () => {
         const query = input.value.trim().toLocaleLowerCase();
-        let visiblePlugins = 0;
-        let visibleThemes = 0;
+        let visible = 0;
 
         cards.forEach((card) => {
-          const isTheme = card.dataset.kind === "theme";
           const matchesQuery = !query || (card.dataset.search || "").includes(query);
-
           card.hidden = !matchesQuery;
-          if (matchesQuery) {
-            if (isTheme) visibleThemes += 1;
-            else visiblePlugins += 1;
-          }
+          if (matchesQuery) visible += 1;
         });
 
-        if (pluginSection) {
-          pluginSection.hidden = visiblePlugins === 0;
-        }
-        if (themeSection) {
-          themeSection.hidden = visibleThemes === 0;
-        }
-
-        if (pluginBadge) {
-          pluginBadge.textContent = String(visiblePlugins);
-        }
-        if (themeBadge) {
-          themeBadge.textContent = String(visibleThemes);
-        }
-
-        count.textContent = formatCount(visiblePlugins, visibleThemes);
-
-        const totalVisible =
-          currentSection === "themes"
-            ? visibleThemes
-            : currentSection === "plugins"
-              ? visiblePlugins
-              : visiblePlugins + visibleThemes;
+        count.textContent = formatCount(visible);
 
         if (empty instanceof HTMLElement) {
-          empty.hidden = totalVisible !== 0;
+          empty.hidden = visible !== 0;
         }
       };
 

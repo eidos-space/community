@@ -80,28 +80,28 @@ summary:focus-visible {
   fill: currentColor;
 }
 
-.site-nav {
+.site-header-brand-group {
   display: flex;
   align-items: center;
-  gap: 2px;
-  padding: 3px;
-  border-radius: 8px;
-  background: var(--soft);
-  margin-left: clamp(14px, 2.5vw, 28px);
-  margin-right: auto;
+  gap: clamp(18px, 3.2vw, 36px);
+}
+
+.site-header-nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2.4vw, 22px);
 }
 
 .site-nav-link {
   display: inline-flex;
   align-items: center;
-  height: 28px;
-  padding: 0 13px;
-  border-radius: 6px;
+  padding-block: 6px;
   color: var(--ink-muted);
-  font-size: 0.78rem;
+  font-size: 0.85rem;
   font-weight: 500;
   text-decoration: none;
-  transition: color 140ms ease, background-color 140ms ease, box-shadow 140ms ease;
+  transition: color 140ms ease;
+  position: relative;
 }
 
 .site-nav-link:hover {
@@ -109,10 +109,19 @@ summary:focus-visible {
 }
 
 .site-nav-link.is-active {
-  background: var(--surface);
   color: var(--ink);
-  font-weight: 600;
-  box-shadow: 0 1px 3px oklch(0.16 0.012 230 / 6%), 0 1px 2px oklch(0.16 0.012 230 / 4%);
+  font-weight: 650;
+}
+
+.site-nav-link.is-active::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 1px;
 }
 
 .site-header-actions {
@@ -297,147 +306,6 @@ summary:focus-visible {
 .plugin-card:hover { background: oklch(0.945 0.018 215); }
 .plugin-card:focus-within { outline: 2px solid var(--accent); outline-offset: 3px; }
 
-.theme-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  width: 100%;
-  gap: var(--space-md);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.theme-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  border-radius: 12px;
-  background: var(--soft);
-  border: 1px solid var(--line);
-  overflow: hidden;
-  transition: background-color 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
-}
-
-.theme-card[hidden] {
-  display: none;
-}
-
-.theme-card:hover {
-  background: oklch(0.945 0.018 215);
-  border-color: oklch(0.88 0.03 215);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-}
-
-.theme-card:focus-within {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-}
-
-.theme-palette-preview {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  height: 100px;
-  width: 100%;
-  border-bottom: 1px solid var(--line);
-  overflow: hidden;
-  user-select: none;
-  pointer-events: none;
-}
-
-.theme-palette-half {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 12px 14px;
-  position: relative;
-}
-
-.theme-palette-light {
-  border-right: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-.theme-palette-dark {
-  border-left: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.theme-palette-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.theme-mode-label {
-  font-size: 0.65rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  opacity: 0.72;
-  font-family: var(--mono);
-}
-
-.theme-swatch {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  border-radius: 9999px;
-  box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.25), inset 0 0 0 1px rgba(0, 0, 0, 0.1);
-  flex-shrink: 0;
-}
-
-.theme-sample-text {
-  font-size: 0.84rem;
-  font-weight: 550;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  opacity: 0.92;
-}
-
-.theme-card-body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-  padding: var(--space-lg);
-  flex: 1;
-}
-
-.theme-card-header {
-  display: grid;
-  grid-template-columns: 56px minmax(0, 1fr);
-  gap: var(--space-md);
-  align-items: start;
-}
-
-.theme-card-titles {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.theme-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: auto;
-  padding-top: 4px;
-}
-
-.theme-tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 8px;
-  border-radius: 6px;
-  background: var(--paper);
-  color: var(--ink-muted);
-  font-size: 0.7rem;
-  font-weight: 500;
-  border: 1px solid var(--line);
-  letter-spacing: -0.01em;
-}
-
 .plugin-icon,
 .detail-icon {
   display: grid;
@@ -620,8 +488,7 @@ summary:focus-visible {
 }
 
 @media (max-width: 760px) {
-  .plugin-grid,
-  .theme-grid { grid-template-columns: minmax(0, 1fr); max-width: 540px; }
+  .plugin-grid { grid-template-columns: minmax(0, 1fr); max-width: 540px; }
   .detail-layout { grid-template-columns: minmax(0, 1fr); gap: 55px; }
   .detail-sidebar { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px; }
 }
@@ -642,35 +509,16 @@ summary:focus-visible {
   .site-header-inner { width: min(calc(100% - 36px), var(--shell)); }
   .site-footer-inner { width: calc(100% - 36px); }
   .site-header-inner { flex-wrap: wrap; gap: 8px 12px; padding-block: 10px 10px; }
-  .brand { order: 1; }
-  .site-header-actions { order: 2; margin-left: auto; gap: 14px; }
+  .site-header-brand-group { width: 100%; justify-content: space-between; align-items: center; }
+  .site-header-nav { gap: 18px; }
+  .site-header-actions { width: 100%; justify-content: flex-end; gap: 16px; }
   .site-header-actions a { padding-block: 6px; font-size: 0.72rem; }
-  .site-nav {
-    order: 3;
-    width: 100%;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 4px;
-    display: flex;
-    justify-content: stretch;
-  }
-  .site-nav-link {
-    flex: 1;
-    justify-content: center;
-    text-align: center;
-    height: 32px;
-    font-size: 0.8rem;
-  }
   .market-hero .shell { padding-block: 24px 28px; }
   .market-hero h1 { font-size: clamp(1.25rem, 5.6vw, 1.7rem); letter-spacing: -0.065em; }
   .market-search { margin-top: 20px; }
   .catalog-layout { padding-block: 32px 90px; }
   .plugin-card { grid-template-columns: 54px minmax(0, 1fr); gap: 18px; padding: 22px; }
   .plugin-card-copy { grid-column: 1 / -1; grid-row: 2; }
-  .theme-palette-preview { height: 86px; }
-  .theme-card-body { padding: 18px; }
-  .theme-card-header { grid-template-columns: 54px minmax(0, 1fr); gap: 18px; }
-  .theme-card-titles { grid-column: 1 / -1; grid-row: 2; }
   .plugin-icon { width: 54px; height: 54px; border-radius: 12px; }
   .plugin-icon svg { width: 26px; height: 26px; }
   .plugin-title-row h3 { font-size: 1.23rem; }
