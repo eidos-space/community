@@ -401,8 +401,17 @@ summary:focus-visible {
 .detail-main { min-width: 0; }
 .app-screenshots { display: flex; gap: 18px; overflow-x: auto; padding-bottom: 12px; scroll-snap-type: x mandatory; }
 .app-screenshots figure { flex: 0 0 min(100%, 690px); margin: 0; scroll-snap-align: start; }
-.app-screenshots img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 12px; background: var(--soft); }
-.app-screenshots figcaption { margin-top: 10px; color: var(--ink-muted); font-size: 0.71rem; }
+.screenshot-btn { display: block; width: 100%; padding: 0; border: none; background: transparent; cursor: zoom-in; border-radius: 12px; overflow: hidden; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.screenshot-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); }
+.app-screenshots img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 12px; background: var(--soft); border: 1px solid var(--line); }
+.app-screenshots figcaption { margin-top: 10px; color: var(--ink-muted); font-size: 0.75rem; }
+.screenshot-lightbox { padding: 0; border: none; border-radius: 14px; background: transparent; max-width: min(92vw, 1200px); max-height: 90vh; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35); overflow: visible; }
+.screenshot-lightbox::backdrop { background: rgba(15, 17, 23, 0.78); backdrop-filter: blur(8px); }
+.lightbox-content { position: relative; display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.lightbox-img { width: 100%; max-height: 80vh; object-fit: contain; display: block; background: #000; }
+.lightbox-caption { margin: 0; padding: 12px 18px; font-size: 0.85rem; color: var(--ink-muted); background: var(--surface); }
+.lightbox-close { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.25); background: rgba(0, 0, 0, 0.65); color: #fff; font-size: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; transition: background 0.15s; }
+.lightbox-close:hover { background: rgba(0, 0, 0, 0.9); }
 .detail-about { margin-top: 0; }
 .app-screenshots + .detail-about { margin-top: 54px; }
 .detail-about > h2 { margin: 0 0 26px; font-size: 1.55rem; font-weight: 620; letter-spacing: -0.035em; }

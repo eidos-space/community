@@ -127,18 +127,34 @@ const backUrl = isTheme
           <article class="detail-main">
             {!!plugin.screenshots?.length && (
               <section class="app-screenshots" aria-label={t.appProfile}>
-                {plugin.screenshots.map((screenshot) => (
+                {plugin.screenshots.map((screenshot, idx) => (
                   <figure>
-                    <img
-                      src={`https://raw.githubusercontent.com/${plugin.repo}/main/${screenshot.path}`}
-                      alt={screenshot.alt}
-                      loading="lazy"
-                    />
+                    <button
+                      type="button"
+                      class="screenshot-btn"
+                      data-screenshot-src={`https://raw.githubusercontent.com/${plugin.repo}/main/${screenshot.path}`}
+                      data-screenshot-alt={screenshot.alt}
+                      aria-label={`View full image: ${screenshot.alt}`}
+                    >
+                      <img
+                        src={`https://raw.githubusercontent.com/${plugin.repo}/main/${screenshot.path}`}
+                        alt={screenshot.alt}
+                        loading={idx === 0 ? "eager" : "lazy"}
+                      />
+                    </button>
                     <figcaption>{screenshot.alt}</figcaption>
                   </figure>
                 ))}
               </section>
             )}
+
+            <dialog class="screenshot-lightbox" id="screenshot-dialog" aria-label="Screenshot preview">
+              <div class="lightbox-content">
+                <button type="button" class="lightbox-close" aria-label="Close">✕</button>
+                <img class="lightbox-img" src="" alt="" />
+                <p class="lightbox-caption"></p>
+              </div>
+            </dialog>
 
             <section class="detail-about" aria-labelledby="about-title">
               <h2 id="about-title">{plugin.kind === "theme" ? t.aboutTheme : t.about}</h2>
@@ -219,3 +235,38 @@ const backUrl = isTheme
     )
   }
 </Layout>
+
+<script>
+  function setupLightbox() {
+    const dialog = document.getElementById("screenshot-dialog");
+    if (!(dialog instanceof HTMLDialogElement) || dialog.dataset.ready === "true") return;
+
+    const modalImg = dialog.querySelector<HTMLImageElement>(".lightbox-img");
+    const modalCaption = dialog.querySelector<HTMLElement>(".lightbox-caption");
+    const closeBtn = dialog.querySelector<HTMLButtonElement>(".lightbox-close");
+
+    document.querySelectorAll<HTMLButtonElement>(".screenshot-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const src = btn.dataset.screenshotSrc;
+        const alt = btn.dataset.screenshotAlt;
+        if (modalImg && src) {
+          modalImg.src = src;
+          modalImg.alt = alt || "";
+        }
+        if (modalCaption) {
+          modalCaption.textContent = alt || "";
+        }
+        dialog.showModal();
+      });
+    });
+
+    closeBtn?.addEventListener("click", () => dialog.close());
+    dialog.addEventListener("click", (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+    dialog.dataset.ready = "true";
+  }
+
+  setupLightbox();
+  document.addEventListener("astro:page-load", setupLightbox);
+</script>
