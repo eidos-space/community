@@ -16,7 +16,7 @@ export const PLUGIN_CATEGORIES = [
 export type PluginCategory = (typeof PLUGIN_CATEGORIES)[number];
 
 const PLUGIN_REGISTRY_CACHE_KEY =
-  "https://community.eidos.space/.well-known/plugins-registry-v1.json";
+  "https://community.eidos.space/.well-known/plugins-registry-v2.json";
 
 export interface MarketplacePlugin {
   kind?: "theme";
