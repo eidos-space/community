@@ -80,8 +80,8 @@ const backUrl = isTheme
               href={backUrl}
               aria-label={isTheme ? t.backThemes : t.back}
             >
-              <span aria-hidden="true">←</span>
-              {isTheme ? t.backThemes : t.back}
+              <span class="detail-back-arrow" aria-hidden="true">←</span>
+              <span class="detail-back-text">{isTheme ? t.backThemes : t.back}</span>
             </a>
 
             <div class="detail-identity">

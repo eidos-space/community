@@ -363,9 +363,11 @@ summary:focus-visible {
 .detail-hero { background: var(--surface); color: var(--ink); }
 .detail-hero .shell { padding-block: var(--space-lg) clamp(44px, 6vw, 72px); }
 
-.detail-back { display: inline-flex; align-items: center; gap: 9px; min-height: 36px; margin-bottom: clamp(32px, 4vw, 50px); color: var(--accent-hover); font-size: 0.8rem; }
-.detail-back:hover { text-decoration: underline; text-underline-offset: 3px; }
-.detail-back span { font-size: 1.1rem; }
+.detail-back { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; margin-bottom: clamp(32px, 4vw, 50px); color: var(--accent-hover); font-size: 0.8rem; text-decoration: none; }
+.detail-back:hover { text-decoration: none; }
+.detail-back:hover .detail-back-text { text-decoration: underline; text-underline-offset: 3px; }
+.detail-back-arrow { display: inline-block; font-size: 1.1rem; transition: transform 0.15s ease; }
+.detail-back:hover .detail-back-arrow { transform: translateX(-2px); }
 
 .detail-identity { display: grid; grid-template-columns: 112px minmax(0, 1fr); align-items: start; column-gap: 32px; text-align: left; }
 .detail-icon { width: 112px; height: 112px; border-radius: 22px; }
