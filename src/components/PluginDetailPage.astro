@@ -2,6 +2,7 @@
 import type { Locale } from "../i18n";
 import { detailMessages, pluginCategoryMessages } from "../i18n";
 import Layout from "../layouts/Layout.astro";
+import ScreenshotCarousel from "./ScreenshotCarousel.astro";
 import { loadPluginDetails, type PluginContribution } from "../lib/plugin-details";
 import { loadMarketplaceRegistry } from "../lib/marketplace-registry";
 import { pluginVisualVariant } from "../lib/plugin-registry";
@@ -126,26 +127,7 @@ const backUrl = isTheme
         <div class="shell detail-layout">
           <article class="detail-main">
             {!!plugin.screenshots?.length && (
-              <section class="app-screenshots" aria-label={t.appProfile}>
-                {plugin.screenshots.map((screenshot, idx) => (
-                  <figure>
-                    <button
-                      type="button"
-                      class="screenshot-btn"
-                      data-screenshot-src={`https://raw.githubusercontent.com/${plugin.repo}/main/${screenshot.path}`}
-                      data-screenshot-alt={screenshot.alt}
-                      aria-label={`View full image: ${screenshot.alt}`}
-                    >
-                      <img
-                        src={`https://raw.githubusercontent.com/${plugin.repo}/main/${screenshot.path}`}
-                        alt={screenshot.alt}
-                        loading={idx === 0 ? "eager" : "lazy"}
-                      />
-                    </button>
-                    <figcaption>{screenshot.alt}</figcaption>
-                  </figure>
-                ))}
-              </section>
+              <ScreenshotCarousel locale={locale} repo={plugin.repo} screenshots={plugin.screenshots} />
             )}
 
             <dialog class="screenshot-lightbox" id="screenshot-dialog" aria-label="Screenshot preview">
