@@ -130,28 +130,17 @@ summary:focus-visible {
   gap: clamp(16px, 3vw, 34px);
 }
 
-.site-header-actions a {
+.site-header-actions > a {
   padding-block: 11px;
   color: var(--ink-muted);
   font-size: 0.76rem;
   transition: color 160ms ease;
 }
 
-.site-header-actions a:hover { color: var(--accent); }
-.site-header-actions a:nth-child(2) { color: var(--accent-hover); font-weight: 650; }
-.site-header-actions a:nth-child(2):hover { color: var(--ink); }
+.site-header-actions > a:hover { color: var(--accent); }
+.site-header-actions > a:nth-child(2) { color: var(--accent-hover); font-weight: 650; }
+.site-header-actions > a:nth-child(2):hover { color: var(--ink); }
 
-.language-menu { position: relative; }
-.language-menu summary { display: flex; min-width: 42px; min-height: 42px; align-items: center; justify-content: center; gap: 3px; border-radius: 8px; color: var(--ink-muted); cursor: pointer; list-style: none; }
-.language-menu summary::-webkit-details-marker { display: none; }
-.language-menu summary:hover,
-.language-menu[open] summary { background: var(--soft); color: var(--ink); }
-.language-menu summary svg { width: 18px; height: 18px; }
-.language-menu summary span { margin-top: -5px; font-size: 0.95rem; }
-.language-options { position: absolute; top: calc(100% + 8px); right: 0; display: grid; min-width: 155px; padding: 6px; border-radius: 10px; background: var(--surface); box-shadow: 0 12px 32px oklch(0.16 0.012 230 / 12%); }
-.site-header .language-options a { display: flex; min-height: 36px; align-items: center; padding: 7px 11px; border-radius: 7px; color: var(--ink); font-size: 0.78rem; white-space: nowrap; }
-.site-header .language-options a:hover { background: var(--soft); }
-.site-header .language-options a[aria-current="page"] { color: var(--accent); font-weight: 600; }
 
 .market-hero {
   overflow: hidden;
@@ -481,16 +470,6 @@ summary:focus-visible {
 .site-footer-motto a { text-decoration: underline; text-decoration-color: rgb(0 0 0 / 25%); text-underline-offset: 4px; }
 .site-footer-motto a:hover { color: #1d1d1f; text-decoration-color: rgb(0 0 0 / 60%); }
 .site-footer-motto a span { margin-left: 4px; }
-.site-footer-language { position: relative; justify-self: end; }
-.site-footer-language summary { display: inline-flex; min-height: 32px; align-items: center; gap: 6px; color: rgb(0 0 0 / 60%); cursor: pointer; list-style: none; }
-.site-footer-language summary::-webkit-details-marker { display: none; }
-.site-footer-language summary svg { width: 14px; height: 14px; }
-.site-footer-language[open] summary,
-.site-footer-language summary:hover { color: #1d1d1f; }
-.site-footer-language-options { position: absolute; right: 0; bottom: calc(100% + 4px); z-index: 30; display: grid; min-width: 130px; background: #fff; box-shadow: 0 10px 30px rgb(0 0 0 / 12%); }
-.site-footer-language-options a { display: flex; min-height: 40px; align-items: center; padding-inline: 12px; color: rgb(0 0 0 / 60%); font-size: 0.625rem; letter-spacing: 0.1em; text-transform: none; }
-.site-footer-language-options a:hover { background: var(--soft); color: var(--ink); }
-.site-footer-language-options a[aria-current="page"] { color: #1d1d1f; font-weight: 700; }
 
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; margin: -1px; padding: 0; border: 0; clip: rect(0, 0, 0, 0); white-space: nowrap; }
 
@@ -512,7 +491,6 @@ summary:focus-visible {
   .site-footer-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 24px; }
   .site-footer-bottom { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .site-footer-motto { text-align: left; }
-  .site-footer-language { justify-self: start; }
 }
 
 @media (max-width: 620px) {
