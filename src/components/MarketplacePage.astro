@@ -2,6 +2,7 @@
 import type { Locale } from "../i18n";
 import { messages, pluginCategoryMessages } from "../i18n";
 import Layout from "../layouts/Layout.astro";
+import { localizePlugin } from "../lib/plugin-localization";
 import { loadMarketplaceRegistry } from "../lib/marketplace-registry";
 import {
   PLUGIN_REGISTRY_REPO,
@@ -25,6 +26,7 @@ Astro.response.headers.set(
 
 try {
   registry = await loadMarketplaceRegistry();
+  registry = { ...registry, plugins: registry.plugins.map((plugin) => localizePlugin(plugin, locale)) };
 } catch (error) {
   console.error("Could not load the Eidos plugin registry", error);
 }

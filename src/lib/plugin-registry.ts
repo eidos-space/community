@@ -1,3 +1,5 @@
+import { parseLocalization, type PluginLocalization } from "./plugin-localization.ts";
+
 export const PLUGIN_REGISTRY_URL =
   "https://raw.githubusercontent.com/eidos-space/registry/main/plugins.registry.json";
 export const PLUGIN_REGISTRY_REPO = "https://github.com/eidos-space/registry";
@@ -16,9 +18,10 @@ export const PLUGIN_CATEGORIES = [
 export type PluginCategory = (typeof PLUGIN_CATEGORIES)[number];
 
 const PLUGIN_REGISTRY_CACHE_KEY =
-  "https://community.eidos.space/.well-known/plugins-registry-v3.json";
+  "https://community.eidos.space/.well-known/plugins-registry-v4.json";
 
 export interface MarketplacePlugin {
+  localization?: PluginLocalization;
   kind?: "theme";
   id: string;
   name: string;
@@ -80,6 +83,8 @@ function parsePlugin(value: unknown): MarketplacePlugin | null {
   }
 
   let icon: MarketplacePlugin["icon"];
+  const localization = value.localization === undefined ? undefined : parseLocalization(value.localization);
+  if (value.localization !== undefined && !localization) return null;
   if (isRecord(value.icon) && Array.isArray(value.icon.paths)) {
     const paths = value.icon.paths.filter(isNonEmptyString).slice(0, 8);
     if (paths.length > 0) icon = { paths };
@@ -109,6 +114,7 @@ function parsePlugin(value: unknown): MarketplacePlugin | null {
     asset: value.asset,
     sha256: value.sha256,
     compatibility: value.compatibility,
+    ...(localization ? { localization } : {}),
     ...(icon ? { icon } : {}),
     ...(screenshots.length ? { screenshots } : {}),
   };
@@ -156,7 +162,6 @@ export function createPluginRegistryLoader({
 }: PluginRegistryLoaderOptions = {}): () => Promise<PluginRegistry> {
   let memoryCache: { value: PluginRegistry; expiresAt: number } | undefined;
   let lastSuccessfulRegistry: PluginRegistry | undefined;
-  let pendingLoad: Promise<PluginRegistry> | undefined;
 
   const load = async (): Promise<PluginRegistry> => {
     const currentTime = now();
@@ -203,12 +208,8 @@ export function createPluginRegistryLoader({
     }
   };
 
-  return () => {
-    pendingLoad ??= load().finally(() => {
-      pendingLoad = undefined;
-    });
-    return pendingLoad;
-  };
+  // Worker I/O belongs to the current request. Share completed public data only.
+  return load;
 }
 
 const defaultLoader = createPluginRegistryLoader();

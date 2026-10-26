@@ -16,5 +16,13 @@
   },
   "observability": {
     "enabled": true
+  },
+  "env": {
+    "preview": {
+      "name": "eidos-plugin-marketplace-preview",
+      "routes": [],
+      "workers_dev": true,
+      "assets": { "directory": "./dist", "binding": "ASSETS" }
+    }
   }
 }

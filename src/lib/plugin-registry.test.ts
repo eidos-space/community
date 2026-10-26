@@ -82,7 +82,7 @@ test("rejects unsupported registry schemas", () => {
   );
 });
 
-test("shares one in-flight GitHub request", async () => {
+test("keeps pending I/O request-local and reuses completed public data", async () => {
   let requestCount = 0;
   const loader = createPluginRegistryLoader({
     getCache: () => undefined,
@@ -93,7 +93,9 @@ test("shares one in-flight GitHub request", async () => {
   });
 
   await Promise.all([loader(), loader()]);
-  assert.equal(requestCount, 1);
+  assert.equal(requestCount, 2);
+  await loader();
+  assert.equal(requestCount, 2);
 });
 
 test("returns the last successful response if a refresh fails", async () => {

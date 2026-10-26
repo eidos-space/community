@@ -39,6 +39,28 @@ test("ignores a manifest whose package identity does not match the registry", ()
   assert.equal(parsePluginManifest({ id: "wrong", version: "0.1.0" }, plugin), undefined);
 });
 
+test("includes host API requests even when the browser has no network origins", () => {
+  const manifest = parsePluginManifest({
+    id: plugin.id,
+    version: plugin.version,
+    connections: {
+      ai: { title: "AI provider", url: "https://api.openai.com/v1/chat/completions", configurable: true },
+      fixed: { title: "Fixed API", url: "https://api.example.com/v1/request" },
+      invalid: { url: "javascript:alert(1)" },
+      credentials: { url: "https://user:secret@example.com" },
+    },
+  }, plugin);
+  assert.deepEqual(manifest?.networkOrigins, []);
+  assert.deepEqual(manifest?.connections, [
+    { id: "ai", title: "AI provider", url: "https://api.openai.com/v1/chat/completions", configurable: true },
+    { id: "fixed", title: "Fixed API", url: "https://api.example.com/v1/request", configurable: false },
+  ]);
+});
+
+test("plugins without API connections keep an empty declaration", () => {
+  assert.deepEqual(parsePluginManifest({ id: plugin.id, version: plugin.version }, plugin)?.connections, []);
+});
+
 test("shows a theme's minimum plugin API rather than the manifest format version", () => {
   const manifest = parsePluginManifest(
     {
