@@ -2,6 +2,7 @@
 import type { Locale } from "../i18n";
 import { detailMessages, pluginCategoryMessages } from "../i18n";
 import Layout from "../layouts/Layout.astro";
+import { localizePlugin } from "../lib/plugin-localization";
 import ScreenshotCarousel from "./ScreenshotCarousel.astro";
 import { loadPluginDetails, type PluginContribution } from "../lib/plugin-details";
 import { loadMarketplaceRegistry } from "../lib/marketplace-registry";
@@ -26,6 +27,7 @@ let plugin;
 try {
   const registry = await loadMarketplaceRegistry();
   plugin = registry.plugins.find((entry) => entry.id === pluginId);
+  if (plugin) plugin = localizePlugin(plugin, locale);
 } catch (error) {
   console.error("Could not load the Eidos plugin registry", error);
 }
@@ -42,7 +44,7 @@ const installUrl = plugin
   : "";
 const iconVariant = plugin ? pluginVisualVariant(plugin.id) : 1;
 const contributions = manifest
-  ? [...manifest.views, ...manifest.actions, ...manifest.formatters]
+  ? [...manifest.views, ...manifest.actions, ...manifest.formatters, ...manifest.hooks]
   : [];
 
 const contributionType = (item: PluginContribution) => {
@@ -140,6 +142,7 @@ const backUrl = isTheme
 
             <section class="detail-about" aria-labelledby="about-title">
               <h2 id="about-title">{plugin.kind === "theme" ? t.aboutTheme : t.about}</h2>
+              {details?.readmeFallback && <p class="detail-unavailable">{t.documentationFallback.replace("{locale}", details.readmeLocale ?? t.defaultLanguage)}</p>}
               {details?.readmeHtml ? (
                 <div class="plugin-readme" set:html={details.readmeHtml} />
               ) : (
@@ -157,7 +160,7 @@ const backUrl = isTheme
                 <div><dt>{t.version}</dt><dd>{plugin.version}</dd></div>
                 <div><dt>{t.apiVersion}</dt><dd>{manifest?.requiresPluginApi ?? manifest?.apiVersion ?? "1.0"}</dd></div>
                 <div><dt>{t.type}</dt><dd>{plugin.kind === "theme" ? t.theme : t.pluginType}</dd></div>
-                <div><dt>{t.compatibility}</dt><dd>{plugin.compatibility}</dd></div>
+                <div class="detail-property-prose"><dt>{t.compatibility}</dt><dd>{plugin.compatibility}</dd></div>
               </dl>
             </section>
 
@@ -168,6 +171,8 @@ const backUrl = isTheme
                   <div><dt>{t.views}</dt><dd>{manifest?.views.length ?? 0}</dd></div>
                   <div><dt>{t.actions}</dt><dd>{manifest?.actions.length ?? 0}</dd></div>
                   <div><dt>{t.formatters}</dt><dd>{manifest?.formatters.length ?? 0}</dd></div>
+                  {!!manifest?.hooks.length && <div><dt>{t.hooks}</dt><dd>{manifest.hooks.length}</dd></div>}
+                  {manifest?.background && <div><dt>{t.background}</dt><dd>1</dd></div>}
                 </dl>
                 {contributions.length > 0 && (
                   <ul class="capability-list">
@@ -182,16 +187,37 @@ const backUrl = isTheme
               </section>
             )}
 
-            <section class="detail-panel">
+            <section class="detail-panel detail-panel-prose">
               <h2>{t.security}</h2>
               <dl>
-                <div><dt>{t.execution}</dt><dd>{plugin.kind === "theme" ? t.themeStyles : t.sandbox}</dd></div>
+                <div><dt>{t.execution}</dt><dd>{plugin.kind === "theme" ? t.themeStyles : manifest?.background ? t.backgroundSandbox : t.sandbox}</dd></div>
                 <div>
-                  <dt>{t.network}</dt>
+                  <dt>{manifest?.background ? t.pageNetwork : t.network}</dt>
                   <dd>
-                    {manifest?.networkOrigins.length
-                      ? manifest.networkOrigins.join(", ")
-                      : t.offline}
+                    {!manifest ? t.networkUnknown : (
+                      manifest.publicNetwork || manifest.networkOrigins.length || manifest.connections.length ? (
+                        <ul class="network-access-list">
+                          {manifest.publicNetwork && !manifest.networkOrigins.length && <li>{t.publicPageNetwork}</li>}
+                          {manifest.networkOrigins.map((origin) => <li>{origin}</li>)}
+                          {manifest.connections.map((connection) => {
+                            const origin = new URL(connection.url).origin;
+                            const addressParts = [origin, ...connection.url.slice(origin.length).split(/(?<=\/)/u)];
+                            return (
+                              <li>
+                                <div class="network-connection-heading">
+                                  <strong>{connection.title}</strong>
+                                  <span>{t.apiConnection}</span>
+                                </div>
+                                <span class="network-endpoint">
+                                  {addressParts.map((part) => <Fragment>{part}<wbr /></Fragment>)}
+                                </span>
+                                {connection.configurable && <small>{t.configurableEndpoint}</small>}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      ) : t.offline
+                    )}
                   </dd>
                 </div>
                 {manifest?.workers && <div><dt>Worker</dt><dd>{t.worker}</dd></div>}
@@ -199,10 +225,25 @@ const backUrl = isTheme
               </dl>
             </section>
 
+            {manifest?.background && (
+              <section class="detail-panel detail-panel-prose">
+                <h2>{t.background}</h2>
+                <p>{t.backgroundLifetime}</p>
+                <dl>
+                  <div><dt>{t.startup}</dt><dd>{manifest.background.autoStart ? t.autoStart : t.explicitStart}</dd></div>
+                  <div><dt>{t.fileEvents}</dt><dd>{manifest.background.fileHistory ? t.fileMetadata : t.notRequested}</dd></div>
+                  <div><dt>{t.backgroundNetwork}</dt><dd>{manifest.background.network ? manifest.background.networkOrigins.join(", ") || t.publicNetwork : t.offline}</dd></div>
+                  <div><dt>{t.bluetooth}</dt><dd>{manifest.background.bluetooth ? manifest.background.services.join(", ") || t.selectedDevice : t.notRequested}</dd></div>
+                </dl>
+              </section>
+            )}
+
             <section class="detail-panel detail-resources">
               <h2>{t.resources}</h2>
               <a href={repoUrl}>{t.source}<span aria-hidden="true">↗</span></a>
               <a href={releaseUrl}>{t.release}<span aria-hidden="true">↗</span></a>
+              <a href="https://github.com/eidos-space/eidos-plugin-template">{t.pluginTemplate}<span aria-hidden="true">↗</span></a>
+              <a href={`https://docs.eidos.space${locale === "zh" ? "/zh-cn" : ""}/plugins/guide/`}>{t.pluginGuide}<span aria-hidden="true">↗</span></a>
             </section>
           </aside>
         </div>

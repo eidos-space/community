@@ -7,9 +7,10 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "pnpm build && wrangler dev --local",
-    "test": "node --experimental-strip-types --test src/lib/plugin-registry.test.ts src/lib/plugin-details.test.ts tests/marketplace-contract.test.mjs",
+    "test": "node --experimental-strip-types --test src/lib/plugin-registry.test.ts src/lib/plugin-details.test.ts src/lib/plugin-localization.test.ts tests/marketplace-contract.test.mjs",
     "typecheck": "astro check",
-    "deploy": "pnpm build && wrangler deploy"
+    "deploy": "pnpm build && wrangler deploy",
+    "deploy:preview": "pnpm build && wrangler deploy --config wrangler.jsonc --env preview"
   },
   "dependencies": {
     "@astrojs/cloudflare": "12.6.0",
