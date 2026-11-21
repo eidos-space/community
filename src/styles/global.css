@@ -150,6 +150,8 @@ summary:focus-visible {
 
 .market-hero .shell { padding-block: var(--space-xl); }
 
+.catalog-shell { max-width: 900px; }
+
 .kicker {
   margin: 0;
   color: var(--ink-muted);
@@ -158,15 +160,13 @@ summary:focus-visible {
   letter-spacing: 0.03em;
 }
 .market-hero h1 {
-  max-width: 100%;
-  margin: 0 auto;
+  margin: 0;
   font-family: var(--heading);
   font-size: clamp(1.5rem, 3.6vw, 3.3rem);
   font-weight: 720;
   letter-spacing: -0.06em;
   line-height: 1.15;
-  text-align: center;
-  white-space: nowrap;
+  text-align: start;
 }
 .hero-title-accent { color: var(--accent-hover); }
 
@@ -177,7 +177,7 @@ summary:focus-visible {
   min-height: 52px;
   align-items: center;
   gap: 14px;
-  margin: var(--space-lg) auto 0;
+  margin: var(--space-lg) 0 0;
   padding-inline: var(--space-lg);
   border-radius: 8px;
   background: var(--soft);
@@ -200,8 +200,6 @@ summary:focus-visible {
   display: flex;
   flex-direction: column;
   gap: clamp(48px, 6vw, 72px);
-  width: min(100%, 900px);
-  margin-inline: auto;
 }
 
 .catalog-section {
@@ -494,12 +492,13 @@ summary:focus-visible {
 }
 
 @media (min-width: 1040px) {
-  .catalog-sections { width: 100%; }
+  .catalog-shell { max-width: none; }
   .plugin-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 @media (max-width: 760px) {
-  .plugin-grid { grid-template-columns: minmax(0, 1fr); max-width: 540px; }
+  .catalog-shell { max-width: 540px; }
+  .plugin-grid { grid-template-columns: minmax(0, 1fr); }
   .detail-layout { grid-template-columns: minmax(0, 1fr); gap: 55px; }
   .detail-sidebar { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px; }
 }
